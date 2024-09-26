@@ -1,0 +1,5 @@
+epiGimp
+*.o
+*.gcda
+*.gcno
+unit_tests
