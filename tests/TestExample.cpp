@@ -7,7 +7,7 @@
 
 #include <criterion/criterion.h>
 
-Test(Example, test1)
+Test(Example, always_passing)
 {
     cr_assert_eq(1, 1);
 }
