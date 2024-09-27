@@ -34,29 +34,21 @@ NAME 	=	epiGimp
 
 # Flags
 IFLAGS 	=	-I./include
-CFLAGS 	=	-Wall -Wextra -Werror -g
+CFLAGS 	=	-Wall -Wextra -g `pkg-config --cflags gtk4`
 
 # Compiler
 CC = g++
 
-# Colors
-YELLOW 	=	/bin/echo -e "\x1b[33m $1\x1b[0m"
-GREEN 	=	/bin/echo -e "\x1b[32m $1\x1b[0m"
-
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@$(CC) -o $(NAME) $(OBJ) $(CFLAGS) $(IFLAGS) && \
-	$(call YELLOW,"✅ $@") || \
-	$(call YELLOW,"❌ $@")
+	@$(CC) -o $(NAME) $(OBJ) `pkg-config --cflags --libs gtk4` $(CFLAGS) $(IFLAGS)
 
 clean:
 	@rm -f $(OBJ)
-	@$(call GREEN,"✅ [$@] done !")
 
 fclean: clean
 	@rm -f $(NAME)
-	@$(call GREEN,"✅ [$@] done !")
 
 re: fclean all
 
@@ -64,9 +56,7 @@ src_obj: $(SRC_OBJ)
 
 tests_run: fclean $(TEST_OBJ)
 	@$(MAKE) src_obj CFLAGS+=--coverage
-	@$(CC) -o unit_tests $(TEST_OBJ) $(SRC_OBJ) $(TEST_FLAGS) && \
-	$(call YELLOW,"✅ $@") || \
-	$(call YELLOW,"❌ $@")
+	@$(CC) -o unit_tests $(TEST_OBJ) $(SRC_OBJ) $(TEST_FLAGS)
 	./unit_tests
 	gcovr --exclude tests/
 
@@ -75,9 +65,6 @@ tests_clean: clean
 	@rm -f unit_tests
 	@rm -f $(TEST_GCDA)
 	@rm -f $(TEST_GCNO)
-	@$(call GREEN,"✅ [$@] done !")
 
 %.o: %.cpp
-	@$(CC) -c -o $@ $< $(CFLAGS) $(IFLAGS) && \
-	$(call YELLOW,"🆗 $<") || \
-	$(call YELLOW,"❌ $<")
+	@$(CC) -c -o $@ $< $(CFLAGS) $(IFLAGS)
