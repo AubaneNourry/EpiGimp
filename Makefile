@@ -12,6 +12,8 @@ MAIN_OBJ	=	$(MAIN:.cpp=.o)
 # Sources
 SRC_FILES 	=	Application.cpp \
 				WindowManager.cpp \
+				MenuBar.cpp \
+				Callbacks.cpp \
 
 
 SRC_DIR 	=	src/

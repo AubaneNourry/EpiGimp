@@ -10,8 +10,11 @@
 
 #include <gtk/gtk.h>
 #include <iostream>
+#include <vector>
 
 #include "WindowManager.hpp"
+#include "MenuBar.hpp"
+#include "Callbacks.hpp"
 
 class Application {
 public:
@@ -24,6 +27,7 @@ public:
 
 private:
     GtkApplication* app;
+    MenuBar *menuBar;
     int status;
 };
 
