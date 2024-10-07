@@ -10,7 +10,8 @@ MAIN		=	src/Main.cpp
 MAIN_OBJ	=	$(MAIN:.cpp=.o)
 
 # Sources
-SRC_FILES 	=	Example.cpp
+SRC_FILES 	=	Application.cpp \
+				WindowManager.cpp \
 
 
 SRC_DIR 	=	src/
