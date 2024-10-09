@@ -93,10 +93,15 @@ public:
 
     void renderButtonLabel(SDL_Renderer* renderer) {
         if (!textTexture) {
-            SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, label.c_str(), { 255, 255, 255, 255 });
-            textTexture = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+            createTextTexture(renderer);
         }
-        SDL_RenderCopy(renderer, textTexture, NULL, &rect);
+        SDL_Rect padded_rect = { 
+            rect.x + (rect.w - static_cast<int>(label.size()) * 10) / 2, 
+            rect.y + (rect.h - 20) / 2, 
+            static_cast<int>(label.size()) * 10, 
+            20 
+        };
+        SDL_RenderCopy(renderer, textTexture, NULL, &padded_rect);
     }
 
     void handleEvent(const SDL_Event& event) override {
