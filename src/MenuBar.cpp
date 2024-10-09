@@ -8,6 +8,7 @@
 #include "MenuBar.hpp"
 
 GtkWidget* MenuBar::create_menubar(GtkWidget* window) {
+    (void)window;
     GtkWidget* box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
     // File menu

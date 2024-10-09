@@ -23,11 +23,15 @@ public:
     int run(int argc, char** argv);
     int getStatus() const;
     GtkApplication* getApp() const;
+    MenuBar *initMenuBar(GtkWidget* window);
+    GtkWidget* initWindow(GtkApplication* app);
     static void onActivate(GtkApplication* app, gpointer user_data);
+    void bindEntries(GtkApplication* app);
 
 private:
     GtkApplication* app;
     MenuBar *menuBar;
+    GtkWidget* window;
     int status;
 };
 
