@@ -13,7 +13,8 @@ MAIN_OBJ	=	$(MAIN:.cpp=.o)
 SRC_FILES 	=	Application.cpp \
 				WindowManager.cpp \
 				MenuBar.cpp \
-				Callbacks.cpp \
+				Tab.cpp \
+				Dock.cpp \
 
 
 SRC_DIR 	=	src/
@@ -37,7 +38,8 @@ NAME 	=	epiGimp
 
 # Flags
 IFLAGS 	=	-I./include
-CFLAGS 	=	-Wall -Wextra -g `pkg-config --cflags gtk4`
+CFLAGS 	=	-Wall -Wextra -g `sdl2-config --cflags` -I/usr/include/SDL2
+LFLAGS  =   `sdl2-config --libs` -lSDL2_image -lSDL2_ttf
 
 # Compiler
 CC = g++
@@ -45,7 +47,7 @@ CC = g++
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@$(CC) -o $(NAME) $(OBJ) `pkg-config --cflags --libs gtk4` $(CFLAGS) $(IFLAGS)
+	@$(CC) -o $(NAME) $(OBJ) $(LFLAGS) $(CFLAGS) $(IFLAGS)
 
 clean:
 	@rm -f $(OBJ)

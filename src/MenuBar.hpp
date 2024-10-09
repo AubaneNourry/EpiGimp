@@ -8,22 +8,27 @@
 #ifndef MENU_BAR_HPP
 #define MENU_BAR_HPP
 
-#include <gtk/gtk.h>
+#include <SDL2/SDL.h>
+#include <vector>
+#include <SDL2/SDL_ttf.h>
+#include "DropdownButton.hpp"
+#include "Button.hpp"
 
 class MenuBar {
 public:
-    MenuBar() = default;
+    MenuBar();
     ~MenuBar() = default;
 
-    GtkWidget* create_menubar(GtkWidget* window);
+    void render(SDL_Renderer* renderer);
+    void handleEvent(const SDL_Event& event) {
+    for (auto& item : _menu_items) {
+        item->handleEvent(event);
+    }
+}
+
 
 private:
-    GMenu* create_file_menu();
-    GMenu* create_edit_menu();
-    GMenu* create_select_menu();
-    GMenu* create_view_menu();
-
-    void add_menu_item(GMenu* menu, const char* label, const char* action);
+    std::vector<DropdownButton *> _menu_items;
 };
 
 #endif // MENU_BAR_HPP

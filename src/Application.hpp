@@ -8,31 +8,30 @@
 #ifndef APPLICATION_HPP
 #define APPLICATION_HPP
 
-#include <gtk/gtk.h>
-#include <iostream>
+#include <SDL2/SDL.h>
 #include <vector>
-
-#include "WindowManager.hpp"
+#include "Dock.hpp"
 #include "MenuBar.hpp"
-#include "Callbacks.hpp"
+#include "WindowManager.hpp"
 
 class Application {
 public:
     Application(const char *appName);
-    ~Application() = default;
-    int run(int argc, char** argv);
-    int getStatus() const;
-    GtkApplication* getApp() const;
-    MenuBar *initMenuBar(GtkWidget* window);
-    GtkWidget* initWindow(GtkApplication* app);
-    static void onActivate(GtkApplication* app, gpointer user_data);
-    void bindEntries(GtkApplication* app);
-
+    int run();
+    
 private:
-    GtkApplication* app;
-    MenuBar *menuBar;
-    GtkWidget* window;
+    void initWindow();
+    void handleEvents();
+    void render();
+    
+    SDL_Window* window;
+    SDL_Renderer* renderer;
     int status;
+    MenuBar* menuBar;
+    Dock* leftDock;
+    Dock* rightDock;
+
+    // Add any additional member variables for state management
 };
 
 #endif // APPLICATION_HPP
