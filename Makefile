@@ -15,6 +15,11 @@ SRC_FILES 	=	Application.cpp \
 				MenuBar.cpp \
 				Tab.cpp \
 				Dock.cpp \
+				buttons/AButton.cpp \
+				buttons/Button.cpp \
+				buttons/DraggableButton.cpp \
+				buttons/DropdownButton.cpp \
+				ImageField.cpp \
 
 
 SRC_DIR 	=	src/

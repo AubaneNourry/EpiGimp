@@ -11,8 +11,8 @@
 #include <SDL2/SDL.h>
 #include <vector>
 #include <SDL2/SDL_ttf.h>
-#include "DropdownButton.hpp"
-#include "Button.hpp"
+#include "buttons/DropdownButton.hpp"
+#include "buttons/Button.hpp"
 
 class MenuBar {
 public:

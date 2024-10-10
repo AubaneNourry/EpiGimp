@@ -11,7 +11,7 @@
 #include <SDL2/SDL.h>
 #include <vector>
 #include "Tab.hpp"
-#include "DraggableButton.hpp"
+#include "buttons/DraggableButton.hpp"
 
 enum DockPosition {
     LEFT,
