@@ -15,15 +15,20 @@ Application::Application(const char *appName, const char *defaultImagePath) {
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     status = 0;
 
-    menuBar = new MenuBar(800);
-    leftDock = new Dock(200, {}, LEFT);
-    rightDock = new Dock(200, {}, RIGHT);
-    imageField = new ImageField(200, 200, FileManager::getInstance().loadTexture(defaultImagePath, renderer));
+    std::string fontStr;
+    #ifdef _WIN32
+        fontStr = "C:\\Windows\\Fonts\\arial.ttf";
+    #elif defined(__linux__)
+        fontStr = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf";
+    #else
+        return;
+    #endif
 
-    EventManager::getInstance().registerElement(menuBar);
-    EventManager::getInstance().registerElement(leftDock);
-    EventManager::getInstance().registerElement(rightDock);
-    EventManager::getInstance().registerElement(imageField);
+    font = TTF_OpenFont(fontStr.c_str(), 24);
+    if (font == NULL) {
+        fprintf(stderr, "error: %s\n", TTF_GetError());
+        exit(EXIT_FAILURE);
+    }
 }
 
 int Application::run() {
@@ -38,8 +43,21 @@ int Application::run() {
     return status;
 }
 
+void Application::init() {
+    menuBar = new MenuBar(800);
+    leftDock = new Dock(200, {}, LEFT);
+    rightDock = new Dock(200, {}, RIGHT);
+    imageField = new ImageField(200, 200, FileManager::getInstance().loadTexture("assets/gimp_logo.jpg", renderer));
+    FileManager::getInstance().setImageField(imageField);
+
+    EventManager::getInstance().registerElement(menuBar);
+    EventManager::getInstance().registerElement(leftDock);
+    EventManager::getInstance().registerElement(rightDock);
+    EventManager::getInstance().registerElement(imageField);
+}
+
 void Application::render() {
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_SetRenderDrawColor(renderer, 220, 220, 220, 255);
     SDL_RenderClear(renderer);
 
     imageField->render(renderer);
@@ -48,4 +66,20 @@ void Application::render() {
     menuBar->render(renderer);
 
     SDL_RenderPresent(renderer);
+}
+
+int Application::getScreenWidth() {
+    int width;
+    SDL_GetRendererOutputSize(renderer, &width, nullptr);
+    return width;
+}
+
+int Application::getScreenHeight() {
+    int height;
+    SDL_GetRendererOutputSize(renderer, nullptr, &height);
+    return height;
+}
+
+TTF_Font *Application::getFont() {
+    return font;
 }

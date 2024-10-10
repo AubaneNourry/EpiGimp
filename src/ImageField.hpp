@@ -19,6 +19,7 @@ public:
     void render(SDL_Renderer* renderer);
     void handleEvent(const SDL_Event& event);
     void setTexture(SDL_Texture* newTexture);
+    SDL_Texture* getTexture();
     void setTextureFromPath(const char* path, SDL_Renderer* renderer);
 
 private:

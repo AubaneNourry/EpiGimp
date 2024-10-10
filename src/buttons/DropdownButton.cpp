@@ -8,8 +8,8 @@
 #include "DropdownButton.hpp"
 #include "DropdownManager.hpp"
 
-DropdownButton::DropdownButton(const std::string& label, SDL_Rect *rect, int buttonHeight, std::vector<AButton*> buttons, TTF_Font* font, SDL_Color color)
-    : AButton(label, rect, font, color), buttonHeight(buttonHeight), isOpen(false) {
+DropdownButton::DropdownButton(const std::string& label, SDL_Rect *rect, int buttonHeight, std::vector<AButton*> buttons, SDL_Color color)
+    : AButton(label, rect, color), buttonHeight(buttonHeight), isOpen(false) {
     for (auto& btn : buttons) {
         btn->setPosition(rect->x, rect->y + rect->h + buttonHeight * this->buttons.size());
         btn->setDimensions(rect->w, buttonHeight);

@@ -9,6 +9,7 @@
 #define APPLICATION_HPP
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <vector>
 #include "WindowManager.hpp"
 #include "FileManager.hpp"
@@ -20,14 +21,16 @@ public:
     int run();
     int getScreenWidth();
     int getScreenHeight();
+    TTF_Font *getFont();
 
     static Application &getInstance() {
         static Application app("EpiGimp", "assets/gimp_logo.jpg");
         return app;
     }
     Application(const char *appName, const char *defaultImagePath);
+    void init();
+    SDL_Renderer *getRenderer() { return renderer; }
 private:
-    void handleEvents();
     void render();
     
     SDL_Window* window;
@@ -37,6 +40,7 @@ private:
     IUIElement* leftDock;
     IUIElement* rightDock;
     IUIElement* imageField;
+    TTF_Font* font;
 };
 
 #endif // APPLICATION_HPP

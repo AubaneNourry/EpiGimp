@@ -30,3 +30,7 @@ void ImageField::setTextureFromPath(const char* path, SDL_Renderer* renderer) {
     texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
 }
+
+SDL_Texture* ImageField::getTexture() {
+    return texture;
+}

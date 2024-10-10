@@ -13,21 +13,22 @@
 #include <SDL2/SDL.h>
 #include <SDL_image.h>
 
+#include "IUIElement.hpp"
+#include "ImageField.hpp"
+
 class FileManager {
 public:
     FileManager() = default;
     ~FileManager() = default;
-    static FileManager &getInstance() {
-        static FileManager fileManager;
-        return fileManager;
-    }
-    static SDL_Texture* loadTexture(const char* path, SDL_Renderer* renderer) {
-        SDL_Surface* surface = IMG_Load(path);
-        SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-        SDL_FreeSurface(surface);
-        std::cout << "Loaded texture from path: " << path << std::endl;
-        return texture;
-    }
+
+    static FileManager &getInstance();
+    SDL_Texture* loadTexture(const char* path, SDL_Renderer* renderer);
+    void setImageField(IUIElement* imageField);
+    void newImageField();
+    void saveImage();
+
+private:
+    IUIElement* imageField;
 };
 
 #endif // FILEMANAGER_HPP

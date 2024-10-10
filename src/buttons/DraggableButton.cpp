@@ -7,8 +7,8 @@
 
 #include "DraggableButton.hpp"
 
-DraggableButton::DraggableButton(int x, int y, int width, int height, TTF_Font* font, SDL_Color color, Axis axis)
-    : AButton("", x, y, width, height, font, color), isDragging(false), axis(axis) {
+DraggableButton::DraggableButton(int x, int y, int width, int height, SDL_Color color, Axis axis)
+    : AButton("", x, y, width, height, color), isDragging(false), axis(axis) {
         setCallbacks();
     }
 

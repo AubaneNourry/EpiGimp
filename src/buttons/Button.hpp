@@ -13,7 +13,7 @@
 
 class Button : public AButton {
 public:
-    Button(const std::string& label, SDL_Rect *rect, TTF_Font* font, SDL_Color color = UICOLOR, bool toggle = false);
+    Button(const std::string& label, SDL_Rect *rect, SDL_Color color = UICOLOR, bool toggle = false);
 
     void render(SDL_Renderer* renderer) override;
 };

@@ -6,6 +6,7 @@
 */
 
 #include "Dock.hpp"
+#include "Application.hpp"
 
 Dock::Dock(int width, std::vector<Tab*> initial_tabs, DockPosition position, SDL_Color color)
     : width(width), hidden(false), active_tab(0), tabs(initial_tabs), color(color), position(position)
@@ -34,27 +35,13 @@ Dock::Dock(int width, std::vector<Tab*> initial_tabs, DockPosition position, SDL
             axis = Axis::Y;
             break;
     }
-    std::string fontStr;
-    #ifdef _WIN32
-        fontStr = "C:\\Windows\\Fonts\\arial.ttf";
-    #elif defined(__linux__)
-        fontStr = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf";
-    #else
-        return;
-    #endif
-
-    TTF_Font* font = TTF_OpenFont(fontStr.c_str(), 24);
-    if (font == NULL) {
-        fprintf(stderr, "error: %s\n", TTF_GetError());
-        exit(EXIT_FAILURE);
-    }
     SDL_Color dragColor = {
         static_cast<Uint8>(std::max(0, static_cast<int>(color.r) - 15)),
         static_cast<Uint8>(std::max(0, static_cast<int>(color.g) - 15)),
         static_cast<Uint8>(std::max(0, static_cast<int>(color.b) - 15)),
         color.a
     };
-    dragDockButton = new DraggableButton(button_area.x, button_area.y, button_area.w, button_area.h, font, dragColor, axis);
+    dragDockButton = new DraggableButton(button_area.x, button_area.y, button_area.w, button_area.h, dragColor, axis);
 }
 
 void Dock::handleEvent(const SDL_Event& event) {

@@ -22,6 +22,7 @@ SRC_FILES 	=	Application.cpp \
 				ImageField.cpp \
 				EventManager.cpp \
 				buttons/DropdownManager.cpp \
+				FileManager.cpp \
 
 SRC_DIR 	=	src/
 SRC		=	$(addprefix $(SRC_DIR), $(SRC_FILES))

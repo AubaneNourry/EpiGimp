@@ -7,8 +7,8 @@
 
 #include "Button.hpp"
 
-Button::Button(const std::string& label, SDL_Rect *rect, TTF_Font* font, SDL_Color color, bool toggle)
-    : AButton(label, rect, font, color, toggle) {}
+Button::Button(const std::string& label, SDL_Rect *rect, SDL_Color color, bool toggle)
+    : AButton(label, rect, color, toggle) {}
 
 void Button::render(SDL_Renderer* renderer) {
     renderButtonRect(renderer);

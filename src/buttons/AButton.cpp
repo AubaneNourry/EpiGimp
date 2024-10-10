@@ -6,14 +6,15 @@
 */
 
 #include "AButton.hpp"
+#include "../Application.hpp"
 
-AButton::AButton(const std::string& label, int x, int y, int width, int height, TTF_Font* font, SDL_Color color, bool toggable)
-    : label(label), rect(new SDL_Rect({x, y, width, height})), font(font), color(color), toggable(toggable) {
+AButton::AButton(const std::string& label, int x, int y, int width, int height, SDL_Color color, bool toggable)
+    : label(label), rect(new SDL_Rect({x, y, width, height})), font(Application::getInstance().getFont()), color(color), toggable(toggable) {
         setDefaultCallbacks();
     }
 
-AButton::AButton(const std::string& label, SDL_Rect *rect, TTF_Font* font, SDL_Color color, bool toggable)
-    : label(label), rect(rect), font(font), color(color), toggable(toggable) {
+AButton::AButton(const std::string& label, SDL_Rect *rect, SDL_Color color, bool toggable)
+    : label(label), rect(rect), font(Application::getInstance().getFont()), color(color), toggable(toggable) {
         setDefaultCallbacks();
     }
 
