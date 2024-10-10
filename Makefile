@@ -10,7 +10,16 @@ MAIN		=	src/Main.cpp
 MAIN_OBJ	=	$(MAIN:.cpp=.o)
 
 # Sources
-SRC_FILES 	=	Example.cpp
+SRC_FILES 	=	Application.cpp \
+				WindowManager.cpp \
+				MenuBar.cpp \
+				Tab.cpp \
+				Dock.cpp \
+				buttons/AButton.cpp \
+				buttons/Button.cpp \
+				buttons/DraggableButton.cpp \
+				buttons/DropdownButton.cpp \
+				ImageField.cpp \
 
 
 SRC_DIR 	=	src/
@@ -34,29 +43,22 @@ NAME 	=	epiGimp
 
 # Flags
 IFLAGS 	=	-I./include
-CFLAGS 	=	-Wall -Wextra -Werror -g
+CFLAGS 	=	-Wall -Wextra -g `sdl2-config --cflags` -I/usr/include/SDL2
+LFLAGS  =   `sdl2-config --libs` -lSDL2_image -lSDL2_ttf -lSDL2_image
 
 # Compiler
 CC = g++
 
-# Colors
-YELLOW 	=	/bin/echo -e "\x1b[33m $1\x1b[0m"
-GREEN 	=	/bin/echo -e "\x1b[32m $1\x1b[0m"
-
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@$(CC) -o $(NAME) $(OBJ) $(CFLAGS) $(IFLAGS) && \
-	$(call YELLOW,"✅ $@") || \
-	$(call YELLOW,"❌ $@")
+	@$(CC) -o $(NAME) $(OBJ) $(LFLAGS) $(CFLAGS) $(IFLAGS)
 
 clean:
 	@rm -f $(OBJ)
-	@$(call GREEN,"✅ [$@] done !")
 
 fclean: clean
 	@rm -f $(NAME)
-	@$(call GREEN,"✅ [$@] done !")
 
 re: fclean all
 
@@ -64,9 +66,7 @@ src_obj: $(SRC_OBJ)
 
 tests_run: fclean $(TEST_OBJ)
 	@$(MAKE) src_obj CFLAGS+=--coverage
-	@$(CC) -o unit_tests $(TEST_OBJ) $(SRC_OBJ) $(TEST_FLAGS) && \
-	$(call YELLOW,"✅ $@") || \
-	$(call YELLOW,"❌ $@")
+	@$(CC) -o unit_tests $(TEST_OBJ) $(SRC_OBJ) $(TEST_FLAGS)
 	./unit_tests
 	gcovr --exclude tests/
 
@@ -75,9 +75,6 @@ tests_clean: clean
 	@rm -f unit_tests
 	@rm -f $(TEST_GCDA)
 	@rm -f $(TEST_GCNO)
-	@$(call GREEN,"✅ [$@] done !")
 
 %.o: %.cpp
-	@$(CC) -c -o $@ $< $(CFLAGS) $(IFLAGS) && \
-	$(call YELLOW,"🆗 $<") || \
-	$(call YELLOW,"❌ $<")
+	@$(CC) -c -o $@ $< $(CFLAGS) $(IFLAGS)

@@ -2,10 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** EpiGimp
 ** File description:
-** Example.cpp
+** Tab.cpp
 */
 
-void myFunction()
-{
-    // Do something
-}
+#include "Tab.hpp"
