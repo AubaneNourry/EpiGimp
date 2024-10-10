@@ -23,15 +23,15 @@ MenuBar::MenuBar(int x) : rect({0, 0, x, 25})
         fprintf(stderr, "error: %s\n", TTF_GetError());
         exit(EXIT_FAILURE);
     }
-    Button *button_1 = new Button("opt1", {0, 0, 0, 0}, font, {200, 200, 200, 255});
-    Button *button_2 = new Button("opt2", {0, 0, 0, 0}, font, {200, 200, 200, 255});
-    Button *button_3 = new Button("opt3", {0, 0, 0, 0}, font, {200, 200, 200, 255});
-    Button *button_4 = new Button("opt4", {0, 0, 0, 0}, font, {200, 200, 200, 255});
-    Button *button_5 = new Button("opt5", {0, 0, 0, 0}, font, {200, 200, 200, 255});
-    _menu_items.push_back(new DropdownButton("File", {0, 0, 100, 25}, 25, {button_1, button_5}, font));
-    _menu_items.push_back(new DropdownButton("Edit", {100, 0, 100, 25}, 25, {button_2}, font));
-    _menu_items.push_back(new DropdownButton("View", {200, 0, 100, 25}, 25, {button_3}, font));
-    _menu_items.push_back(new DropdownButton("Help", {300, 0, 100, 25}, 25, {button_4}, font));
+    Button *button_1 = new Button("opt1", new SDL_Rect({0, 0, 0, 0}), font, {200, 200, 200, 255});
+    Button *button_2 = new Button("opt2", new SDL_Rect({0, 0, 0, 0}), font, {200, 200, 200, 255});
+    Button *button_3 = new Button("opt3", new SDL_Rect({0, 0, 0, 0}), font, {200, 200, 200, 255});
+    Button *button_4 = new Button("opt4", new SDL_Rect({0, 0, 0, 0}), font, {200, 200, 200, 255});
+    Button *button_5 = new Button("opt5", new SDL_Rect({0, 0, 0, 0}), font, {200, 200, 200, 255});
+    _menu_items.push_back(new DropdownButton("File", new SDL_Rect({0, 0, 100, 25}), 25, {button_1, button_5}, font));
+    _menu_items.push_back(new DropdownButton("Edit", new SDL_Rect({100, 0, 100, 25}), 25, {button_2}, font));
+    _menu_items.push_back(new DropdownButton("View", new SDL_Rect({200, 0, 100, 25}), 25, {button_3}, font));
+    _menu_items.push_back(new DropdownButton("Help", new SDL_Rect({300, 0, 100, 25}), 25, {button_4}, font));
 }
 
 void MenuBar::render(SDL_Renderer* renderer)

@@ -13,6 +13,7 @@
 #include "WindowManager.hpp"
 #include "FileManager.hpp"
 #include "IUIElement.hpp"
+#include "EventManager.hpp"
 
 class Application {
 public:
@@ -36,6 +37,8 @@ private:
     IUIElement* leftDock;
     IUIElement* rightDock;
     IUIElement* imageField;
+
+    EventManager* eventManager;
 };
 
 #endif // APPLICATION_HPP

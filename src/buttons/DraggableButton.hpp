@@ -20,16 +20,13 @@ enum Axis {
 class DraggableButton : public AButton {
 public:
     DraggableButton(int x, int y, int width, int height, TTF_Font* font, SDL_Color color, Axis axis);
-    void click() override;
-    void hover() override;
-    void release() override;
+    void click();
     void stopDragging();
     void render(SDL_Renderer* renderer) override;
     void handleEvent(const SDL_Event& event) override;
-    void setPosition(int x, int y) override;
-    void setDimensions(int width, int height) override;
     void setAxis(Axis axis);
     Axis getAxis();
+    void setCallbacks();
 
 private:
     bool isDragging;

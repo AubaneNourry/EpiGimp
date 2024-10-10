@@ -20,7 +20,7 @@ SRC_FILES 	=	Application.cpp \
 				buttons/DraggableButton.cpp \
 				buttons/DropdownButton.cpp \
 				ImageField.cpp \
-
+				EventManager.cpp \
 
 SRC_DIR 	=	src/
 SRC		=	$(addprefix $(SRC_DIR), $(SRC_FILES))

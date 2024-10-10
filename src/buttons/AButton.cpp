@@ -7,12 +7,12 @@
 
 #include "AButton.hpp"
 
-#include <iostream>
-
 AButton::AButton(const std::string& label, int x, int y, int width, int height, TTF_Font* font, SDL_Color color)
-    : label(label), rect({ x, y, width, height }), font(font), color(color) {}
+    : label(label), rect(new SDL_Rect({x, y, width, height})), font(font), color(color) {
+        setDefaultCallbacks();
+    }
 
-AButton::AButton(const std::string& label, SDL_Rect rect, TTF_Font* font, SDL_Color color)
+AButton::AButton(const std::string& label, SDL_Rect *rect, TTF_Font* font, SDL_Color color)
     : label(label), rect(rect), font(font), color(color) {}
 
 AButton::~AButton() {
@@ -21,15 +21,32 @@ AButton::~AButton() {
     }
 }
 
+void AButton::setDefaultCallbacks() {
+    onClick = [this]() {
+        std::cout << "Button '" << label << "' clicked!" << std::endl;
+        isClicked = !isClicked;
+    };
+
+    onHover = [this]() {
+        std::cout << "Button '" << label << "' hovered!" << std::endl;
+        isHovered = true;
+    };
+
+    onRelease = [this]() {
+        std::cout << "Button '" << label << "' released!" << std::endl;
+        isHovered = false;
+        isClicked = false;
+    };
+}
 
 void AButton::setPosition(int x, int y) {
-    rect.x = x;
-    rect.y = y;
+    rect->x = x;
+    rect->y = y;
 }
 
 void AButton::setDimensions(int width, int height) {
-    rect.w = width;
-    rect.h = height;
+    rect->w = width;
+    rect->h = height;
 }
 
 void AButton::setLabel(const std::string& label) {
@@ -44,11 +61,23 @@ void AButton::setColor(SDL_Color color) {
     this->color = color;
 }
 
+void AButton::setOnClick(std::function<void()> onClickCallback) {
+    this->onClick = onClickCallback;
+}
+
+void AButton::setOnHover(std::function<void()> onHoverCallback) {
+    this->onHover = onHoverCallback;
+}
+
+void AButton::setOnRelease(std::function<void()> onReleaseCallback) {
+    this->onRelease = onReleaseCallback;
+}
+
 std::string AButton::getLabel() const {
     return label;
 }
 
-SDL_Rect AButton::getRect() const {
+SDL_Rect *AButton::getRect() const {
     return rect;
 }
 
@@ -58,10 +87,6 @@ TTF_Font* AButton::getFont() const {
 
 SDL_Color AButton::getColor() const {
     return color;
-}
-
-SDL_Texture* AButton::getTextTexture() const {
-    return textTexture;
 }
 
 void AButton::createTextTexture(SDL_Renderer* renderer) {
@@ -88,52 +113,34 @@ void AButton::renderButtonRect(SDL_Renderer* renderer) {
         actualColor = { static_cast<Uint8>(color.r + HOVERED_OFFSET), static_cast<Uint8>(color.g + HOVERED_OFFSET), static_cast<Uint8>(color.b + HOVERED_OFFSET), color.a };
     }
     SDL_SetRenderDrawColor(renderer, actualColor.r, actualColor.g, actualColor.b, actualColor.a);
-    SDL_RenderFillRect(renderer, &rect);
+    SDL_RenderFillRect(renderer, rect);
 }
 
 void AButton::renderButtonLabel(SDL_Renderer* renderer) {
     if (!textTexture) {
         createTextTexture(renderer);
     }
-    SDL_Rect padded_rect = { 
-        rect.x + (rect.w - static_cast<int>(label.size()) * 10) / 2, 
-        rect.y + (rect.h - 20) / 2, 
-        static_cast<int>(label.size()) * 10, 
-        20 
+    SDL_Rect padded_rect = {
+        rect->x + (rect->w - static_cast<int>(label.size()) * 10) / 2,
+        rect->y + (rect->h - 20) / 2,
+        static_cast<int>(label.size()) * 10,
+        20
     };
-    SDL_RenderCopy(renderer, textTexture, NULL, &padded_rect);
+    SDL_RenderCopy(renderer, textTexture, nullptr, &padded_rect);
 }
-
-void AButton::click() {
-    std::cout << "Button '" << label << "' clicked!" << std::endl;
-    isClicked = !isClicked;
-}
-
-void AButton::hover() {
-    isHovered = true;
-}
-
-void AButton::release() {}
 
 void AButton::handleEvent(const SDL_Event& event) {
-    if (event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP || event.type == SDL_MOUSEMOTION) {
-        int mouseX = event.button.x;
-        int mouseY = event.button.y;
+    int mouseX, mouseY;
+    SDL_GetMouseState(&mouseX, &mouseY);
 
-        if (mouseX >= rect.x && mouseX <= rect.x + rect.w && mouseY >= rect.y && mouseY <= rect.y + rect.h) {
-            if (event.type == SDL_MOUSEBUTTONDOWN) {
-                click();
-            } else if (event.type == SDL_MOUSEBUTTONUP) {
-                release();
-            } else if (event.type == SDL_MOUSEMOTION) {
-                hover();
-            }
-        } else {
-            isHovered = false;
-        }
+    if (event.type == SDL_MOUSEMOTION) {
+        isHovered = (mouseX >= rect->x && mouseX <= rect->x + rect->w && mouseY >= rect->y && mouseY <= rect->y + rect->h);
+        if (isHovered && onHover) onHover();
+    } else if (event.type == SDL_MOUSEBUTTONDOWN && isHovered) {
+        isClicked = true;
+        if (onClick) onClick();
+    } else if (event.type == SDL_MOUSEBUTTONUP && isClicked) {
+        isClicked = false;
+        if (onRelease) onRelease();
     }
-}
-
-SDL_Rect *AButton::getRect() {
-    return &rect;
 }

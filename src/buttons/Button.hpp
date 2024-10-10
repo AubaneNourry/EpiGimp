@@ -13,11 +13,8 @@
 
 class Button : public AButton {
 public:
-    Button(const std::string& label, SDL_Rect rect, TTF_Font* font, SDL_Color color = UICOLOR);
+    Button(const std::string& label, SDL_Rect *rect, TTF_Font* font, SDL_Color color = UICOLOR);
 
-    void click() override;
-    void hover() override;
-    void release() override;
     void render(SDL_Renderer* renderer) override;
 };
 

@@ -52,7 +52,7 @@ Dock::Dock(int width, std::vector<Tab*> initial_tabs, DockPosition position, SDL
         static_cast<Uint8>(std::max(0, static_cast<int>(color.r) - 15)),
         static_cast<Uint8>(std::max(0, static_cast<int>(color.g) - 15)),
         static_cast<Uint8>(std::max(0, static_cast<int>(color.b) - 15)),
-        color.a // Alpha doesn't need clamping since it won't be negative
+        color.a
     };
     dragDockButton = new DraggableButton(button_area.x, button_area.y, button_area.w, button_area.h, font, dragColor, axis);
 }
