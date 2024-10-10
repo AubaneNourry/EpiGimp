@@ -14,7 +14,7 @@
 
 class DropdownButton : public AButton {
 public:
-    DropdownButton(const std::string& label, int x, int y, int width, int height, int buttonHeight, std::vector<AButton*> buttons, TTF_Font* font, SDL_Color color);
+    DropdownButton(const std::string& label, SDL_Rect rect, int buttonHeight, std::vector<AButton*> buttons, TTF_Font* font, SDL_Color color = UICOLOR);
 
     void click() override;
     void hover() override;

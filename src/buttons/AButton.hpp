@@ -14,12 +14,13 @@
 
 class AButton : public IButton {
 public:
-    AButton(const std::string& label, int x, int y, int width, int height, TTF_Font* font, SDL_Color color);
+    AButton(const std::string& label, int x, int y, int width, int height, TTF_Font* font, SDL_Color color = UICOLOR);
+    AButton(const std::string& label, SDL_Rect rect, TTF_Font* font, SDL_Color color = UICOLOR);
 
     virtual ~AButton();
-    virtual void click() override = 0;  // Pure virtual click method
-    virtual void hover() override = 0;  // Pure virtual hover method
-    virtual void release() override = 0; // Pure virtual release method
+    virtual void click() override;
+    virtual void hover() override;
+    virtual void release() override;
     virtual void render(SDL_Renderer* renderer) override = 0; // Pure virtual render method
 
     void setPosition(int x, int y) override;
@@ -28,11 +29,8 @@ public:
     void setFont(TTF_Font* font);
     void setColor(SDL_Color color);
     std::string getLabel() const;
-
     SDL_Rect getRect() const;
-
     TTF_Font* getFont() const;
-
     SDL_Color getColor() const;
     SDL_Texture* getTextTexture() const;
     void createTextTexture(SDL_Renderer* renderer);
@@ -48,6 +46,8 @@ protected:
     TTF_Font* font;    // Font for rendering text
     SDL_Color color;   // Color for rendering text
     SDL_Texture* textTexture = nullptr; // Texture for rendering text
+    bool isHovered = false;
+    bool isClicked = false;
 };
 
 #endif // ABUTTON_HPP

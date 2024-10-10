@@ -10,10 +10,9 @@
 
 #include <SDL2/SDL.h>
 #include <vector>
-#include "Dock.hpp"
-#include "MenuBar.hpp"
 #include "WindowManager.hpp"
-#include "ImageField.hpp"
+#include "FileManager.hpp"
+#include "IUIElement.hpp"
 
 class Application {
 public:
@@ -22,24 +21,21 @@ public:
     int getScreenHeight();
 
     static Application &getInstance() {
-        static Application app("EpiGimp");
+        static Application app("EpiGimp", "assets/gimp_logo.jpg");
         return app;
     }
-    
+    Application(const char *appName, const char *defaultImagePath);
 private:
-    Application(const char *appName);
     void handleEvents();
     void render();
     
     SDL_Window* window;
     SDL_Renderer* renderer;
     int status;
-    MenuBar* menuBar;
-    Dock* leftDock;
-    Dock* rightDock;
-    ImageField* imageField;
-
-    // Add any additional member variables for state management
+    IUIElement* menuBar;
+    IUIElement* leftDock;
+    IUIElement* rightDock;
+    IUIElement* imageField;
 };
 
 #endif // APPLICATION_HPP

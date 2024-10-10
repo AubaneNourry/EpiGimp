@@ -23,6 +23,7 @@ public:
     void click() override;
     void hover() override;
     void release() override;
+    void stopDragging();
     void render(SDL_Renderer* renderer) override;
     void handleEvent(const SDL_Event& event) override;
     void setPosition(int x, int y) override;

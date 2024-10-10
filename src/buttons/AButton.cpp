@@ -7,8 +7,13 @@
 
 #include "AButton.hpp"
 
+#include <iostream>
+
 AButton::AButton(const std::string& label, int x, int y, int width, int height, TTF_Font* font, SDL_Color color)
     : label(label), rect({ x, y, width, height }), font(font), color(color) {}
+
+AButton::AButton(const std::string& label, SDL_Rect rect, TTF_Font* font, SDL_Color color)
+    : label(label), rect(rect), font(font), color(color) {}
 
 AButton::~AButton() {
     if (textTexture) {
@@ -76,7 +81,13 @@ void AButton::destroyTextTexture() {
 }
 
 void AButton::renderButtonRect(SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+    SDL_Color actualColor = color;
+    if (isClicked) {
+        actualColor = { static_cast<Uint8>(color.r + CLICKED_OFFSET), static_cast<Uint8>(color.g + CLICKED_OFFSET), static_cast<Uint8>(color.b + CLICKED_OFFSET), color.a };
+    } else if (isHovered) {
+        actualColor = { static_cast<Uint8>(color.r + HOVERED_OFFSET), static_cast<Uint8>(color.g + HOVERED_OFFSET), static_cast<Uint8>(color.b + HOVERED_OFFSET), color.a };
+    }
+    SDL_SetRenderDrawColor(renderer, actualColor.r, actualColor.g, actualColor.b, actualColor.a);
     SDL_RenderFillRect(renderer, &rect);
 }
 
@@ -93,6 +104,17 @@ void AButton::renderButtonLabel(SDL_Renderer* renderer) {
     SDL_RenderCopy(renderer, textTexture, NULL, &padded_rect);
 }
 
+void AButton::click() {
+    std::cout << "Button '" << label << "' clicked!" << std::endl;
+    isClicked = !isClicked;
+}
+
+void AButton::hover() {
+    isHovered = true;
+}
+
+void AButton::release() {}
+
 void AButton::handleEvent(const SDL_Event& event) {
     if (event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP || event.type == SDL_MOUSEMOTION) {
         int mouseX = event.button.x;
@@ -106,6 +128,8 @@ void AButton::handleEvent(const SDL_Event& event) {
             } else if (event.type == SDL_MOUSEMOTION) {
                 hover();
             }
+        } else {
+            isHovered = false;
         }
     }
 }

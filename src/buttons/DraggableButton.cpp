@@ -11,20 +11,25 @@ DraggableButton::DraggableButton(int x, int y, int width, int height, TTF_Font* 
     : AButton("", x, y, width, height, font, color), isDragging(false), axis(axis) {}
 
 void DraggableButton::click() {
+    AButton::click();
     isDragging = true;
     offset = 0;
-    color = { 100, 100, 100, 255 };
     std::cout << "Draggable Button '" << label << "' clicked!" << " Offset: " << offset << std::endl;
 }
 
 void DraggableButton::hover() {
+    AButton::hover();
     std::cout << "Draggable Button '" << label << "' is hovered!" << std::endl;
 }
 
 void DraggableButton::release() {
-    isDragging = false;
-    color = { 200, 200, 200, 255 };
+    AButton::release();
     std::cout << "Draggable Button '" << label << "' released!" << std::endl;
+}
+
+void DraggableButton::stopDragging() {
+    isDragging = false;
+    std::cout << "Draggable Button '" << label << "' stopped dragging!" << std::endl;
 }
 
 void DraggableButton::render(SDL_Renderer* renderer) {
@@ -32,15 +37,13 @@ void DraggableButton::render(SDL_Renderer* renderer) {
 }
 
 void DraggableButton::handleEvent(const SDL_Event& event) {
+    AButton::handleEvent(event);
     int mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
 
-    if (event.type == SDL_MOUSEBUTTONDOWN && isInsideButton(mouseX, mouseY)) {
-        click();
-    } 
-    else if (event.type == SDL_MOUSEBUTTONUP) {
+    if (event.type == SDL_MOUSEBUTTONUP) {
         if (isDragging) {
-            release();
+            stopDragging();
         }
     } 
     else if (event.type == SDL_MOUSEMOTION && isDragging) {

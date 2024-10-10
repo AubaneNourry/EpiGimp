@@ -22,8 +22,11 @@ int main(int argc, char** argv) {
         std::cerr << "SDL_ttf could not initialize! TTF_Error: " << TTF_GetError() << std::endl;
         return 1;
     }
+    Application *app;
+    if (argc == 2)
+        app = new Application("EpiGimp", argv[1]);
+    else
+        app = new Application("EpiGimp", "assets/gimp_logo.jpg");
 
-    Application &app = Application::getInstance();
-
-    return app.run();
+    return app->run();
 }

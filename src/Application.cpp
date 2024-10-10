@@ -6,18 +6,21 @@
 */
 
 #include "Application.hpp"
+#include "Dock.hpp"
+#include "MenuBar.hpp"
+#include "ImageField.hpp"
 
-Application::Application(const char *appName) {
+Application::Application(const char *appName, const char *defaultImagePath) {
     window = SDL_CreateWindow(appName, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     status = 0;
 
     menuBar = new MenuBar(800);
-    leftDock = new Dock(200, {}, LEFT, { 175, 175, 175, 255 });
-    rightDock = new Dock(200, {}, RIGHT, { 175, 175, 175, 255 });
+    leftDock = new Dock(200, {}, LEFT);
+    rightDock = new Dock(200, {}, RIGHT);
 
-    imageField = new ImageField(200, 200, nullptr);
-    imageField->setTextureFromPath("assets/gimp_logo.jpg", renderer);
+    imageField = new ImageField(200, 200, FileManager::getInstance().loadTexture(defaultImagePath, renderer));
+
 }
 
 int Application::getScreenWidth() {
@@ -50,8 +53,8 @@ void Application::handleEvents() {
         if (event.type == SDL_QUIT) {
             status = 1;
         } if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED) {
-            leftDock->maintainRatio(renderer);
-            rightDock->maintainRatio(renderer);
+            static_cast<Dock*>(leftDock)->maintainRatio(renderer);
+            static_cast<Dock*>(rightDock)->maintainRatio(renderer);
         }
         menuBar->handleEvent(event);
         leftDock->handleEvent(event);
@@ -61,7 +64,7 @@ void Application::handleEvents() {
 }
 
 void Application::render() {
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // Set draw color to white
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);
 
     imageField->render(renderer);

@@ -7,20 +7,19 @@
 
 #include "Button.hpp"
 
-Button::Button(const std::string& label, int x, int y, int width, int height, TTF_Font* font, SDL_Color color)
-    : AButton(label, x, y, width, height, font, color) {}
+Button::Button(const std::string& label, SDL_Rect rect, TTF_Font* font, SDL_Color color)
+    : AButton(label, rect, font, color) {}
 
 void Button::click() {
-    std::cout << "Button '" << label << "' clicked!" << std::endl;
+    AButton::click();
 }
 
 void Button::hover() {
-    std::cout << "Button '" << label << "' is hovered!" << std::endl;
-    
+    AButton::hover();
 }
 
 void Button::release() {
-    std::cout << "Button '" << label << "' released!" << std::endl;
+    AButton::release();
 }
 
 void Button::render(SDL_Renderer* renderer) {

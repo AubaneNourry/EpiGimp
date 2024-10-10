@@ -13,8 +13,9 @@
 #include <SDL2/SDL_ttf.h>
 #include "buttons/DropdownButton.hpp"
 #include "buttons/Button.hpp"
+#include "IUIElement.hpp"
 
-class MenuBar {
+class MenuBar : public IUIElement {
 public:
     MenuBar(int x);
     ~MenuBar() = default;

@@ -12,6 +12,7 @@
 #include <vector>
 #include "Tab.hpp"
 #include "buttons/DraggableButton.hpp"
+#include "IUIElement.hpp"
 
 enum DockPosition {
     LEFT,
@@ -20,9 +21,9 @@ enum DockPosition {
     BOTTOM
 };
 
-class Dock {
+class Dock : public IUIElement {
 public:
-    Dock(int width, std::vector<Tab*> initial_tabs, DockPosition position, SDL_Color color);
+    Dock(int width, std::vector<Tab*> initial_tabs, DockPosition position, SDL_Color color = UICOLOR);
     void render(SDL_Renderer* renderer);
     void add_tab(Tab* tab);
     void set_hidden(bool hide);

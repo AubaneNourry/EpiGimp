@@ -10,8 +10,9 @@
 
 #include <SDL2/SDL.h>
 #include <SDL_image.h>
+#include "IUIElement.hpp"
 
-class ImageField {
+class ImageField : public IUIElement {
 public:
     ImageField(int w, int h, SDL_Texture* texture);
 
