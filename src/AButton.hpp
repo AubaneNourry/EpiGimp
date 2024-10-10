@@ -121,6 +121,10 @@ public:
         }
     }
 
+    SDL_Rect *getRect() {
+        return &rect;
+    }
+
 protected:
     std::string label; // Button label
     SDL_Rect rect;    // Button rectangle

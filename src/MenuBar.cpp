@@ -7,7 +7,7 @@
 
 #include "MenuBar.hpp"
 
-MenuBar::MenuBar()
+MenuBar::MenuBar(int x) : rect({0, 0, x, 25})
 {
     std::string fontStr;
     #ifdef _WIN32
@@ -36,6 +36,12 @@ MenuBar::MenuBar()
 
 void MenuBar::render(SDL_Renderer* renderer)
 {
+    SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
+    //update rect to be the size of the window
+    int windowWidth, windowHeight;
+    SDL_GetRendererOutputSize(renderer, &windowWidth, &windowHeight);
+    rect.w = windowWidth;
+    SDL_RenderFillRect(renderer, &rect);
     for (auto& item : _menu_items) {
         item->render(renderer);
     }

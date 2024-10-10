@@ -24,8 +24,10 @@ public:
     void click() override {
         isOpen = !isOpen; // Toggle dropdown state
         if (isOpen) {
+            color = { 100, 100, 100, 255 };
             std::cout << "Dropdown Button '" << label << "' opened!" << std::endl;
         } else {
+            color = { 150, 150, 150, 255 };
             std::cout << "Dropdown Button '" << label << "' closed!" << std::endl;
         }
     }

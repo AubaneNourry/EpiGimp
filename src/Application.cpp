@@ -12,7 +12,22 @@ Application::Application(const char *appName) {
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     status = 0;
 
-    menuBar = new MenuBar();
+    menuBar = new MenuBar(800);
+    leftDock = new Dock(200, {}, LEFT, { 175, 175, 175, 255 });
+    rightDock = new Dock(200, {}, RIGHT, { 175, 175, 175, 255 });
+
+}
+
+int Application::getScreenWidth() {
+    int windowWidth, windowHeight;
+    SDL_GetRendererOutputSize(renderer, &windowWidth, &windowHeight);
+    return windowWidth;
+}
+
+int Application::getScreenHeight() {
+    int windowWidth, windowHeight;
+    SDL_GetRendererOutputSize(renderer, &windowWidth, &windowHeight);
+    return windowHeight;
 }
 
 int Application::run() {
@@ -32,8 +47,13 @@ void Application::handleEvents() {
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
             status = 1; // Set status to exit
+        } if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED) {
+            leftDock->maintainRatio(renderer);
+            rightDock->maintainRatio(renderer);
         }
         menuBar->handleEvent(event);
+        leftDock->handleEvent(event);
+        rightDock->handleEvent(event);
         // Handle other events (e.g., keyboard, mouse)
     }
 }
@@ -42,12 +62,9 @@ void Application::render() {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // Set draw color to white
     SDL_RenderClear(renderer);
 
-    // Render the menu bar
+    leftDock->render(renderer);
+    rightDock->render(renderer);
+    
     menuBar->render(renderer);
-    
-    // Render the docks and menu bar here
-    // e.g., leftDock->render(renderer);
-    // e.g., rightDock->render(renderer);
-    
     SDL_RenderPresent(renderer);
 }

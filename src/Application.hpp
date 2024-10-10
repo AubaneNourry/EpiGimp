@@ -16,10 +16,17 @@
 
 class Application {
 public:
-    Application(const char *appName);
     int run();
+    int getScreenWidth();
+    int getScreenHeight();
+
+    static Application &getInstance() {
+        static Application app("EpiGimp");
+        return app;
+    }
     
 private:
+    Application(const char *appName);
     void initWindow();
     void handleEvents();
     void render();

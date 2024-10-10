@@ -23,6 +23,7 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    Application app("EpiGimp");
+    Application &app = Application::getInstance();
+
     return app.run();
 }
