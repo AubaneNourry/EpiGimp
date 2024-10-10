@@ -3,3 +3,4 @@ epiGimp
 *.gcda
 *.gcno
 unit_tests
+results/*
