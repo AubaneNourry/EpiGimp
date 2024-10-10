@@ -18,8 +18,8 @@
 
 class AButton : public IButton {
 public:
-    AButton(const std::string& label, int x, int y, int width, int height, TTF_Font* font, SDL_Color color);
-    AButton(const std::string& label, SDL_Rect *rect, TTF_Font* font, SDL_Color color);
+    AButton(const std::string& label, int x, int y, int width, int height, TTF_Font* font, SDL_Color color, bool toggable = true);
+    AButton(const std::string& label, SDL_Rect *rect, TTF_Font* font, SDL_Color color, bool toggable = true);
     virtual ~AButton();
 
     // Setters
@@ -50,6 +50,7 @@ protected:
     SDL_Rect *rect;
     TTF_Font* font;
     SDL_Color color;
+    bool toggable;
     bool isClicked = false;
     bool isHovered = false;
 

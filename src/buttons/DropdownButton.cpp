@@ -6,31 +6,53 @@
 */
 
 #include "DropdownButton.hpp"
+#include "DropdownManager.hpp"
 
 DropdownButton::DropdownButton(const std::string& label, SDL_Rect *rect, int buttonHeight, std::vector<AButton*> buttons, TTF_Font* font, SDL_Color color)
     : AButton(label, rect, font, color), buttonHeight(buttonHeight), isOpen(false) {
-        for (auto& btn : buttons) {
-            btn->setPosition(rect->x, rect->y + rect->h + buttonHeight * this->buttons.size());
-            btn->setDimensions(rect->w, buttonHeight);
-            this->buttons.push_back(btn);
-        }
-        setCallbacks();
+    for (auto& btn : buttons) {
+        btn->setPosition(rect->x, rect->y + rect->h + buttonHeight * this->buttons.size());
+        btn->setDimensions(rect->w, buttonHeight);
+        this->buttons.push_back(btn);
     }
+    DropdownManager::getInstance().registerDropdown(this);
+    setCallbacks();
+}
+
+void DropdownButton::close() {
+    isOpen = false;
+    isClicked = false;
+}
 
 void DropdownButton::setCallbacks() {
     onClick = [this]() {
-        std::cout << "Button '" << label << "' clicked!" << std::endl;
-        isClicked = !isClicked;
-        isOpen = !isOpen;
+        isOpen = isClicked;
+        if (isOpen) {
+            EventManager::getInstance().triggerEvent("dropdown_opened", { "dropdown_opened", time(nullptr), this });
+        }
+    };
+    onHover = [this]() {
+        isHovered = true;
+        isOpen = true;
+        EventManager::getInstance().triggerEvent("dropdown_opened", { "dropdown_opened", time(nullptr), this });
     };
 }
 
 void DropdownButton::handleEvent(const SDL_Event& event) {
     AButton::handleEvent(event);
-    
+
+    int mouseX, mouseY;
+    SDL_GetMouseState(&mouseX, &mouseY);
+
     if (isOpen) {
         for (auto& btn : buttons) {
             btn->handleEvent(event);
+        }
+    }
+    if (event.type == SDL_MOUSEMOTION) {
+        isHovered = (mouseX >= rect->x && mouseX <= rect->x + rect->w && mouseY >= rect->y && mouseY <= rect->y + rect->h + buttonHeight * buttons.size());
+        if (!isHovered && !isClicked) {
+            isOpen = false;
         }
     }
 }

@@ -7,13 +7,15 @@
 
 #include "AButton.hpp"
 
-AButton::AButton(const std::string& label, int x, int y, int width, int height, TTF_Font* font, SDL_Color color)
-    : label(label), rect(new SDL_Rect({x, y, width, height})), font(font), color(color) {
+AButton::AButton(const std::string& label, int x, int y, int width, int height, TTF_Font* font, SDL_Color color, bool toggable)
+    : label(label), rect(new SDL_Rect({x, y, width, height})), font(font), color(color), toggable(toggable) {
         setDefaultCallbacks();
     }
 
-AButton::AButton(const std::string& label, SDL_Rect *rect, TTF_Font* font, SDL_Color color)
-    : label(label), rect(rect), font(font), color(color) {}
+AButton::AButton(const std::string& label, SDL_Rect *rect, TTF_Font* font, SDL_Color color, bool toggable)
+    : label(label), rect(rect), font(font), color(color), toggable(toggable) {
+        setDefaultCallbacks();
+    }
 
 AButton::~AButton() {
     if (textTexture) {
@@ -23,19 +25,19 @@ AButton::~AButton() {
 
 void AButton::setDefaultCallbacks() {
     onClick = [this]() {
-        std::cout << "Button '" << label << "' clicked!" << std::endl;
         isClicked = !isClicked;
+        if (!toggable) {
+        }
     };
 
     onHover = [this]() {
-        std::cout << "Button '" << label << "' hovered!" << std::endl;
         isHovered = true;
     };
 
     onRelease = [this]() {
-        std::cout << "Button '" << label << "' released!" << std::endl;
-        isHovered = false;
-        isClicked = false;
+        if (!toggable) {
+            isClicked = false;
+        }
     };
 }
 
@@ -136,11 +138,10 @@ void AButton::handleEvent(const SDL_Event& event) {
     if (event.type == SDL_MOUSEMOTION) {
         isHovered = (mouseX >= rect->x && mouseX <= rect->x + rect->w && mouseY >= rect->y && mouseY <= rect->y + rect->h);
         if (isHovered && onHover) onHover();
-    } else if (event.type == SDL_MOUSEBUTTONDOWN && isHovered) {
-        isClicked = true;
+    } else if (event.type == SDL_MOUSEBUTTONDOWN && (mouseX >= rect->x && mouseX <= rect->x + rect->w && mouseY >= rect->y && mouseY <= rect->y + rect->h)) {
+        isClicked = !isClicked;
         if (onClick) onClick();
-    } else if (event.type == SDL_MOUSEBUTTONUP && isClicked) {
-        isClicked = false;
+    } else if (event.type == SDL_MOUSEBUTTONUP && isClicked && (mouseX >= rect->x && mouseX <= rect->x + rect->w && mouseY >= rect->y && mouseY <= rect->y + rect->h)) {
         if (onRelease) onRelease();
     }
 }

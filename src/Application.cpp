@@ -10,8 +10,7 @@
 #include "MenuBar.hpp"
 #include "ImageField.hpp"
 
-Application::Application(const char *appName, const char *defaultImagePath)
-    : eventManager(new EventManager()) { // Initialize EventManager
+Application::Application(const char *appName, const char *defaultImagePath) {
     window = SDL_CreateWindow(appName, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     status = 0;
@@ -21,15 +20,15 @@ Application::Application(const char *appName, const char *defaultImagePath)
     rightDock = new Dock(200, {}, RIGHT);
     imageField = new ImageField(200, 200, FileManager::getInstance().loadTexture(defaultImagePath, renderer));
 
-    eventManager->registerElement(menuBar);
-    eventManager->registerElement(leftDock);
-    eventManager->registerElement(rightDock);
-    eventManager->registerElement(imageField);
+    EventManager::getInstance().registerElement(menuBar);
+    EventManager::getInstance().registerElement(leftDock);
+    EventManager::getInstance().registerElement(rightDock);
+    EventManager::getInstance().registerElement(imageField);
 }
 
 int Application::run() {
-    while (status == 0 && !eventManager->getQuitStatus()) {
-        eventManager->handleEvents();
+    while (status == 0 && !EventManager::getInstance().getQuitStatus()) {
+        EventManager::getInstance().handleEvents();
         render();
     }
 

@@ -37,8 +37,6 @@ private:
     IUIElement* leftDock;
     IUIElement* rightDock;
     IUIElement* imageField;
-
-    EventManager* eventManager;
 };
 
 #endif // APPLICATION_HPP

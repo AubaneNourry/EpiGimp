@@ -14,7 +14,6 @@ DraggableButton::DraggableButton(int x, int y, int width, int height, TTF_Font* 
 
 void DraggableButton::setCallbacks() {
     onClick = [this]() {
-        std::cout << "Button '" << label << "' clicked!" << std::endl;
         isClicked = !isClicked;
         isDragging = true;
         offset = 0;

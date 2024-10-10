@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** EpiGimp
 ** File description:
-** Button.hpp
+** ClickButton.hpp
 */
 
 #ifndef BUTTON_HPP
@@ -11,11 +11,12 @@
 #include "AButton.hpp"
 #include <iostream>
 
-class Button : public AButton {
+class ClickButton : public AButton {
 public:
-    Button(const std::string& label, SDL_Rect *rect, TTF_Font* font, SDL_Color color = UICOLOR, bool toggle = false);
+    ClickButton(const std::string& label, SDL_Rect *rect, TTF_Font* font, SDL_Color color = UICOLOR);
 
     void render(SDL_Renderer* renderer) override;
+    void setCallbacks();
 };
 
 #endif // BUTTON_HPP

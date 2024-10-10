@@ -9,6 +9,7 @@
 #define DROPDOWNBUTTON_HPP
 
 #include "AButton.hpp"
+#include "../EventManager.hpp"
 #include <vector>
 #include <iostream>
 
@@ -20,6 +21,7 @@ public:
     void render(SDL_Renderer* renderer) override;
     void handleEvent(const SDL_Event& event) override;
     void addButton(AButton* button);
+    void close();
 
 private:
     int buttonHeight;             // Fixed height for dropdown buttons
