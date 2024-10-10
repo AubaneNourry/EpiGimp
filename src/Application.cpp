@@ -16,6 +16,8 @@ Application::Application(const char *appName) {
     leftDock = new Dock(200, {}, LEFT, { 175, 175, 175, 255 });
     rightDock = new Dock(200, {}, RIGHT, { 175, 175, 175, 255 });
 
+    imageField = new ImageField(200, 200, nullptr);
+    imageField->setTextureFromPath("assets/gimp_logo.jpg", renderer);
 }
 
 int Application::getScreenWidth() {
@@ -46,7 +48,7 @@ void Application::handleEvents() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
-            status = 1; // Set status to exit
+            status = 1;
         } if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED) {
             leftDock->maintainRatio(renderer);
             rightDock->maintainRatio(renderer);
@@ -54,7 +56,7 @@ void Application::handleEvents() {
         menuBar->handleEvent(event);
         leftDock->handleEvent(event);
         rightDock->handleEvent(event);
-        // Handle other events (e.g., keyboard, mouse)
+        imageField->handleEvent(event);
     }
 }
 
@@ -62,9 +64,11 @@ void Application::render() {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // Set draw color to white
     SDL_RenderClear(renderer);
 
+    imageField->render(renderer);
+    
     leftDock->render(renderer);
     rightDock->render(renderer);
-    
+
     menuBar->render(renderer);
     SDL_RenderPresent(renderer);
 }

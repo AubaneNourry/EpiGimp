@@ -50,6 +50,16 @@ public:
         }
     }
 
+    void handleEvent(const SDL_Event& event) override {
+        AButton::handleEvent(event);
+
+        if (isOpen) {
+            for (const auto& btn : buttons) {
+                btn->handleEvent(event);
+            }
+        }
+    }
+
     void addButton(AButton* button) {
         button->setPosition(rect.x, rect.y + buttonHeight * buttons.size() + rect.h); // Set position of dropdown buttons
         button->setDimensions(rect.w, buttonHeight); // Set dimensions of dropdown buttons

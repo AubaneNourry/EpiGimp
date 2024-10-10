@@ -41,7 +41,6 @@ public:
 
     void render(SDL_Renderer* renderer) override {
         renderButtonRect(renderer);
-        renderButtonLabel(renderer);
     }
 
     void handleEvent(const SDL_Event& event) override {
@@ -52,7 +51,9 @@ public:
             click();
         } 
         else if (event.type == SDL_MOUSEBUTTONUP) {
-            release();
+            if (isDragging) {
+                release();
+            }
         } 
         else if (event.type == SDL_MOUSEMOTION && isDragging) {
             if (axis == Axis::X) {

@@ -13,6 +13,7 @@
 #include "Dock.hpp"
 #include "MenuBar.hpp"
 #include "WindowManager.hpp"
+#include "ImageField.hpp"
 
 class Application {
 public:
@@ -27,7 +28,6 @@ public:
     
 private:
     Application(const char *appName);
-    void initWindow();
     void handleEvents();
     void render();
     
@@ -37,6 +37,7 @@ private:
     MenuBar* menuBar;
     Dock* leftDock;
     Dock* rightDock;
+    ImageField* imageField;
 
     // Add any additional member variables for state management
 };

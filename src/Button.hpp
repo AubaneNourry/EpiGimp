@@ -23,6 +23,7 @@ public:
 
     void hover() override {
         std::cout << "Button '" << label << "' is hovered!" << std::endl;
+        
     }
 
     void release() override {

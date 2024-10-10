@@ -39,7 +39,7 @@ NAME 	=	epiGimp
 # Flags
 IFLAGS 	=	-I./include
 CFLAGS 	=	-Wall -Wextra -g `sdl2-config --cflags` -I/usr/include/SDL2
-LFLAGS  =   `sdl2-config --libs` -lSDL2_image -lSDL2_ttf
+LFLAGS  =   `sdl2-config --libs` -lSDL2_image -lSDL2_ttf -lSDL2_image
 
 # Compiler
 CC = g++
