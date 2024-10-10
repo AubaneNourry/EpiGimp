@@ -13,27 +13,12 @@
 
 class Button : public AButton {
 public:
-    Button(const std::string& label, int x, int y, int width, int height, TTF_Font* font, SDL_Color color)
-        : AButton(label, x, y, width, height, font, color) {
-    }
+    Button(const std::string& label, int x, int y, int width, int height, TTF_Font* font, SDL_Color color);
 
-    void click() override {
-        std::cout << "Button '" << label << "' clicked!" << std::endl;
-    }
-
-    void hover() override {
-        std::cout << "Button '" << label << "' is hovered!" << std::endl;
-        
-    }
-
-    void release() override {
-        std::cout << "Button '" << label << "' released!" << std::endl;
-    }
-
-    void render(SDL_Renderer* renderer) override {
-        renderButtonRect(renderer);
-        renderButtonLabel(renderer);
-    }
+    void click() override;
+    void hover() override;
+    void release() override;
+    void render(SDL_Renderer* renderer) override;
 };
 
 #endif // BUTTON_HPP
