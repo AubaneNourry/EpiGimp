@@ -14,9 +14,31 @@ FileManager &FileManager::getInstance() {
 }
 
 SDL_Texture* FileManager::loadTexture(const char* path, SDL_Renderer* renderer) {
-    SDL_Surface* surface = IMG_Load(path);
+    std::string filePath = path;
+    std::string extension = filePath.substr(filePath.find_last_of(".") + 1);
+    SDL_Surface* surface = nullptr;
+
+    if (extension == "bmp") {
+        surface = SDL_LoadBMP(path);
+    } else if (extension == "png" || extension == "jpg" || extension == "jpeg" || extension == "tif" || extension == "tiff") {
+        surface = IMG_Load(path);
+    } else {
+        std::cerr << "Unsupported file format: " << extension << std::endl;
+        return nullptr;
+    }
+
+    if (!surface) {
+        SDL_Log("Failed to load image: %s, SDL_image Error: %s", path, IMG_GetError());
+        return nullptr;
+    }
+
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+
     SDL_FreeSurface(surface);
+    if (!texture) {
+        SDL_Log("Failed to create texture from surface: %s, SDL Error: %s", path, SDL_GetError());
+        return nullptr;
+    }
     return texture;
 }
 
@@ -34,46 +56,40 @@ void FileManager::newImageField() {
 }
 
 void FileManager::saveImage() {
-    std::cout << "Saving image..." << std::endl;
-
-    // Create a surface for the 200x200 image
-    SDL_Surface* surface = SDL_CreateRGBSurface(0, 200, 200, 32, 0xFF0000, 0x00FF00, 0x0000FF, 0x000000);
+    SDL_Texture* texture = static_cast<ImageField*>(imageField)->getTexture();
+    int width = static_cast<ImageField*>(imageField)->getWidth();
+    int height = static_cast<ImageField*>(imageField)->getHeight();
+    SDL_Surface* surface = SDL_CreateRGBSurface(0, width, height, 32, 0xFF0000, 0x00FF00, 0x0000FF, 0x000000);
     
     if (!surface) {
         std::cerr << "Failed to create surface: " << SDL_GetError() << std::endl;
         return;
     }
 
-    // Get the current renderer
     SDL_Renderer* renderer = Application::getInstance().getRenderer();
-
-    // Define the rectangle to capture the middle of the screen
-    int screenWidth, screenHeight;
-    SDL_GetRendererOutputSize(renderer, &screenWidth, &screenHeight);
-
-    // Calculate the position to capture the middle of the screen
-    int x = (screenWidth - 200) / 2;
-    int y = (screenHeight - 200) / 2;
-    SDL_Rect captureRect = { x, y, 200, 200 };
-
-    // Set the render target to the texture you want to read pixels from
-    SDL_SetRenderTarget(renderer, static_cast<ImageField*>(imageField)->getTexture());
-
-    // Read the pixels into the surface from the specified rectangle
-    if (SDL_RenderReadPixels(renderer, &captureRect, surface->format->format, surface->pixels, surface->pitch) != 0) {
-        std::cerr << "Failed to read pixels: " << SDL_GetError() << std::endl;
+    SDL_Texture* targetTexture = SDL_CreateTexture(renderer, surface->format->format, SDL_TEXTUREACCESS_TARGET, width, height);
+    if (!targetTexture) {
+        std::cerr << "Failed to create texture: " << SDL_GetError() << std::endl;
         SDL_FreeSurface(surface);
         return;
     }
 
-    // Save the surface as a PNG file
+    SDL_SetRenderTarget(renderer, targetTexture);
+    SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+    if (SDL_RenderReadPixels(renderer, nullptr, surface->format->format, surface->pixels, surface->pitch) != 0) {
+        std::cerr << "Failed to read pixels: " << SDL_GetError() << std::endl;
+        SDL_FreeSurface(surface);
+        SDL_DestroyTexture(targetTexture);
+        return;
+    }
+
     if (IMG_SavePNG(surface, "results/output.png") != 0) {
         std::cerr << "Failed to save PNG: " << IMG_GetError() << std::endl;
         SDL_FreeSurface(surface);
+        SDL_DestroyTexture(targetTexture);
         return;
     }
 
-    // Clean up
     SDL_FreeSurface(surface);
-    std::cout << "Image saved successfully as results/output.png" << std::endl;
+    SDL_DestroyTexture(targetTexture);
 }

@@ -29,10 +29,11 @@ Application::Application(const char *appName, const char *defaultImagePath) {
         fprintf(stderr, "error: %s\n", TTF_GetError());
         exit(EXIT_FAILURE);
     }
+    running = true;
 }
 
 int Application::run() {
-    while (status == 0 && !EventManager::getInstance().getQuitStatus()) {
+    while (status == 0 && !EventManager::getInstance().getQuitStatus() && running) {
         EventManager::getInstance().handleEvents();
         render();
     }
@@ -82,4 +83,8 @@ int Application::getScreenHeight() {
 
 TTF_Font *Application::getFont() {
     return font;
+}
+
+void Application::quit() {
+    running = false;
 }

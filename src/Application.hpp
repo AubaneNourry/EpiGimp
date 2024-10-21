@@ -30,12 +30,15 @@ public:
     Application(const char *appName, const char *defaultImagePath);
     void init();
     SDL_Renderer *getRenderer() { return renderer; }
+    SDL_Window *getWindow() { return window; }
+    void quit();
 private:
     void render();
     
     SDL_Window* window;
     SDL_Renderer* renderer;
     int status;
+    bool running;
     IUIElement* menuBar;
     IUIElement* leftDock;
     IUIElement* rightDock;
