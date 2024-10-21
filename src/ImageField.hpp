@@ -21,6 +21,9 @@ public:
     void setTexture(SDL_Texture* newTexture);
     SDL_Texture* getTexture();
     void setTextureFromPath(const char* path, SDL_Renderer* renderer);
+    void setDimensions(int w, int h) { this->w = w; this->h = h; }
+    int getWidth() const { return w; }
+    int getHeight() const { return h; }
 
 private:
     int w;
