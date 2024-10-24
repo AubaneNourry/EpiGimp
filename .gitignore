@@ -5,3 +5,4 @@ epiGimp
 unit_tests
 results/*
 .idea/*
+vgcore.*
