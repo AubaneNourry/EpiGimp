@@ -19,7 +19,7 @@ Application::Application(const char *appName, const char *defaultImagePath) {
     #ifdef _WIN32
         fontStr = "C:\\Windows\\Fonts\\arial.ttf";
     #elif defined(__linux__)
-        fontStr = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf";
+        fontStr = "/usr/share/fonts/liberation-sans/LiberationSans-Regular.ttf";
     #else
         return;
     #endif
@@ -48,9 +48,8 @@ void Application::init() {
     menuBar = new MenuBar(800);
     leftDock = new Dock(200, {}, LEFT);
     rightDock = new Dock(200, {}, RIGHT);
-    imageField = new ImageField(200, 200, FileManager::getInstance().loadTexture("assets/gimp_logo.jpg", renderer));
+    imageField = new ImageField(200, 200, renderer);
     FileManager::getInstance().setImageField(imageField);
-
     EventManager::getInstance().registerElement(menuBar);
     EventManager::getInstance().registerElement(leftDock);
     EventManager::getInstance().registerElement(rightDock);

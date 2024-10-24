@@ -50,7 +50,13 @@ void DropdownButton::handleEvent(const SDL_Event& event) {
         }
     }
     if (event.type == SDL_MOUSEMOTION) {
-        isHovered = (mouseX >= rect->x && mouseX <= rect->x + rect->w && mouseY >= rect->y && mouseY <= rect->y + rect->h + buttonHeight * buttons.size());
+        if (!isHovered)
+        {
+            isHovered = (mouseX >= rect->x && mouseX <= rect->x + rect->w && mouseY >= rect->y && mouseY <= rect->y + rect->h + buttonHeight * buttons.size());
+        } else
+        {
+            isHovered = (mouseX >= rect->x && mouseX <= rect->x + rect->w && mouseY >= rect->y && mouseY <= rect->y + rect->h);
+        }
         if (!isHovered && !isClicked) {
             isOpen = false;
         }

@@ -42,17 +42,12 @@ SDL_Texture* FileManager::loadTexture(const char* path, SDL_Renderer* renderer) 
     return texture;
 }
 
-void FileManager::setImageField(IUIElement* imageField) {
-    this->imageField = imageField;
+void FileManager::setImageField(IUIElement *imageField) {
+    this->imageField = dynamic_cast<ImageField*>(imageField);
 }
 
 void FileManager::newImageField() {
-    SDL_Surface* surface = SDL_CreateRGBSurface(0, 600, 600, 32, 0xFF0000, 0x00FF00, 0x0000FF, 0x000000);
-    SDL_FillRect(surface, nullptr, SDL_MapRGB(surface->format, 255, 255, 255));
-    SDL_Texture* blankTexture = SDL_CreateTextureFromSurface(Application::getInstance().getRenderer(), surface);
-    SDL_FreeSurface(surface);
-
-    static_cast<ImageField*>(imageField)->setTexture(blankTexture);
+    imageField->clear();
 }
 
 void FileManager::saveImage() {

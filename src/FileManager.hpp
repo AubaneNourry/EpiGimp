@@ -11,9 +11,8 @@
 #include <string>
 #include <iostream>
 #include <SDL2/SDL.h>
-#include <SDL_image.h>
+#include <SDL2/SDL_image.h>
 
-#include "IUIElement.hpp"
 #include "ImageField.hpp"
 
 class FileManager {
@@ -28,7 +27,7 @@ public:
     void saveImage();
 
 private:
-    IUIElement* imageField;
+    ImageField* imageField;
 };
 
 #endif // FILEMANAGER_HPP
