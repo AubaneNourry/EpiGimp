@@ -64,6 +64,7 @@ int PopupWindowThread(void* data) {
     }
     SDL_DestroyRenderer(popupRenderer);
     SDL_DestroyWindow(popupWindow);
+    delete popupData;
     return 0;
 }
 
@@ -74,6 +75,11 @@ void createPopupWindowAsync(const std::string& title, int width, int height) {
     if (!popupThread) {
         std::cerr << "Failed to create popup thread: " << SDL_GetError() << std::endl;
         delete popupData;
+    } else {
+        // Wait for the thread to finish to avoid potential memory issues
+        int threadReturnValue;
+        SDL_WaitThread(popupThread, &threadReturnValue);
+        std::cout << "Popup thread finished with return value: " << threadReturnValue << std::endl;
     }
 }
 
