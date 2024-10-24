@@ -4,3 +4,4 @@ epiGimp
 *.gcno
 unit_tests
 results/*
+.idea/*
