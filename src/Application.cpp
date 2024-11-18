@@ -46,7 +46,7 @@ int Application::run() {
 
 void Application::init() {
     menuBar = new MenuBar(800);
-    leftDock = new Dock(200, {}, LEFT);
+    leftDock = new Dock(200, {}, LEFT, {new Tab("Tools", "assets/icons/brush.png", false)});
     rightDock = new Dock(200, {}, RIGHT);
     imageField = new ImageField(200, 200, renderer);
     FileManager::getInstance().setImageField(imageField);
@@ -56,7 +56,8 @@ void Application::init() {
     EventManager::getInstance().registerElement(imageField);
 }
 
-void Application::render() {
+void Application::render() const
+{
     SDL_SetRenderDrawColor(renderer, 220, 220, 220, 255);
     SDL_RenderClear(renderer);
 
@@ -68,19 +69,22 @@ void Application::render() {
     SDL_RenderPresent(renderer);
 }
 
-int Application::getScreenWidth() {
+int Application::getScreenWidth() const
+{
     int width;
     SDL_GetRendererOutputSize(renderer, &width, nullptr);
     return width;
 }
 
-int Application::getScreenHeight() {
+int Application::getScreenHeight() const
+{
     int height;
     SDL_GetRendererOutputSize(renderer, nullptr, &height);
     return height;
 }
 
-TTF_Font *Application::getFont() {
+TTF_Font *Application::getFont() const
+{
     return font;
 }
 

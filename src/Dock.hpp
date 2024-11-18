@@ -21,23 +21,23 @@ enum DockPosition {
     BOTTOM
 };
 
-class Dock : public IUIElement {
+class Dock final : public IUIElement {
 public:
-    Dock(int width, std::vector<Tab*> initial_tabs, DockPosition position, SDL_Color color = UICOLOR);
-    void render(SDL_Renderer* renderer);
+    Dock(int width, const std::vector<Tab*>& initial_tabs, DockPosition position, const std::vector<Tab *>& dock_tabs = {}, SDL_Color color = UICOLOR);
+    void render(SDL_Renderer* renderer) override;
     void add_tab(Tab* tab);
     void set_hidden(bool hide);
-    void handleEvent(const SDL_Event& event);
+    void handleEvent(const SDL_Event& event) override;
     void stickToEdge(SDL_Renderer* renderer);
     void maintainRatio(SDL_Renderer* renderer);
     
 private:
-    unsigned int width;
+    int width;
     bool hidden;
     unsigned int active_tab;
     std::vector<Tab*> tabs;
     SDL_Color color;
-    SDL_Rect dockArea;
+    SDL_Rect dockArea{};
     DraggableButton* dragDockButton;
     DockPosition position;
 };

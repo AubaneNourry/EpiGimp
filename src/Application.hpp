@@ -19,9 +19,9 @@
 class Application {
 public:
     int run();
-    int getScreenWidth();
-    int getScreenHeight();
-    TTF_Font *getFont();
+    [[nodiscard]] int getScreenWidth() const;
+    [[nodiscard]] int getScreenHeight() const;
+    [[nodiscard]] TTF_Font *getFont() const;
 
     static Application &getInstance() {
         static Application app("EpiGimp", "assets/gimp_logo.jpg");
@@ -29,20 +29,20 @@ public:
     }
     Application(const char *appName, const char *defaultImagePath);
     void init();
-    SDL_Renderer *getRenderer() { return renderer; }
-    SDL_Window *getWindow() { return window; }
+    [[nodiscard]] SDL_Renderer *getRenderer() const { return renderer; }
+    [[nodiscard]] SDL_Window *getWindow() const { return window; }
     void quit();
 private:
-    void render();
+    void render() const;
     
     SDL_Window* window;
     SDL_Renderer* renderer;
     int status;
     bool running;
-    IUIElement* menuBar;
-    IUIElement* leftDock;
-    IUIElement* rightDock;
-    IUIElement* imageField;
+    IUIElement* menuBar{};
+    IUIElement* leftDock{};
+    IUIElement* rightDock{};
+    IUIElement* imageField{};
     TTF_Font* font;
 };
 
