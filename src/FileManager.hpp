@@ -21,7 +21,7 @@ public:
     ~FileManager() = default;
 
     static FileManager &getInstance();
-    SDL_Texture* loadTexture(const char* path, SDL_Renderer* renderer);
+    static SDL_Texture* loadTexture(const std::string& path);
     void setImageField(IUIElement* imageField);
     void newImageField();
     void saveImage();

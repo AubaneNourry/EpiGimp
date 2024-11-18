@@ -13,15 +13,15 @@ FileManager &FileManager::getInstance() {
     return fileManager;
 }
 
-SDL_Texture* FileManager::loadTexture(const char* path, SDL_Renderer* renderer) {
-    std::string filePath = path;
-    std::string extension = filePath.substr(filePath.find_last_of(".") + 1);
+SDL_Texture* FileManager::loadTexture(const std::string& path) {
+    const std::string& filePath = path;
+    const std::string extension = filePath.substr(filePath.find_last_of('.') + 1);
     SDL_Surface* surface = nullptr;
 
     if (extension == "bmp") {
-        surface = SDL_LoadBMP(path);
+        surface = SDL_LoadBMP(path.c_str());
     } else if (extension == "png" || extension == "jpg" || extension == "jpeg" || extension == "tif" || extension == "tiff") {
-        surface = IMG_Load(path);
+        surface = IMG_Load(path.c_str());
     } else {
         std::cerr << "Unsupported file format: " << extension << std::endl;
         return nullptr;
@@ -31,7 +31,7 @@ SDL_Texture* FileManager::loadTexture(const char* path, SDL_Renderer* renderer) 
         SDL_Log("Failed to load image: %s, SDL_image Error: %s", path, IMG_GetError());
         return nullptr;
     }
-
+    SDL_Renderer *renderer = Application::getInstance().getRenderer();
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 
     SDL_FreeSurface(surface);

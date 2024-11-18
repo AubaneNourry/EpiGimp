@@ -29,7 +29,7 @@ public:
     void setPosition(int x, int y);
     SDL_Texture* getTexture();
     void setTexture(SDL_Texture* texture);
-    void updateTexture(SDL_Renderer* renderer) const;
+    void updateTexture() const;
 
     void setPixels(Uint32* pixels);
     Uint32* getPixels();

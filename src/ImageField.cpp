@@ -26,7 +26,7 @@ ImageField::~ImageField() {
 }
 
 void ImageField::render(SDL_Renderer* renderer) {
-    updateTexture(renderer);
+    updateTexture();
     SDL_RenderCopy(renderer, texture, NULL, &rect);
 }
 
@@ -63,7 +63,7 @@ void ImageField::drawPixel(int mouseX, int mouseY) {
         int relativeY = mouseY - rect.y;
 
         pixels[relativeY * rect.w + relativeX] = 0x000000FF;
-        updateTexture(SDL_GetRenderer(SDL_GetWindowFromID(1)));
+        updateTexture();
     }
 }
 
@@ -71,7 +71,7 @@ void ImageField::setTextureFromPath(const char* path, SDL_Renderer* renderer) {
     SDL_Surface* surface = IMG_Load(path);
     if (surface) {
         memcpy(pixels, surface->pixels, rect.w * rect.h * sizeof(Uint32));
-        updateTexture(renderer);
+        updateTexture();
         SDL_FreeSurface(surface);
     }
 }
@@ -91,7 +91,7 @@ void ImageField::setPosition(int x, int y) {
     rect.y = y;
 }
 
-void ImageField::updateTexture(SDL_Renderer* renderer) const {
+void ImageField::updateTexture() const {
     SDL_UpdateTexture(texture, nullptr, pixels, rect.w * sizeof(Uint32));
 }
 
@@ -120,6 +120,6 @@ void ImageField::clear(Uint32 color) {
             pixels[i] = color;
         }
         // Update the texture with the new pixel data
-        updateTexture(SDL_GetRenderer(SDL_GetWindowFromID(1)));  // Assuming WindowID 1, change as needed
+        updateTexture();  // Assuming WindowID 1, change as needed
     }
 }
