@@ -16,15 +16,15 @@
 class ImageField : public IUIElement {
 public:
     ImageField(int w, int h, SDL_Renderer* renderer);
-    ~ImageField();
+    ~ImageField() override;
 
-    void render(SDL_Renderer* renderer);
-    void handleEvent(const SDL_Event& event);
-    void setTextureFromPath(const char* path, SDL_Renderer* renderer);
+    void render(SDL_Renderer* renderer) override;
+    void handleEvent(const SDL_Event& event) override;
+    void setTextureFromPath(const char* path);
 
     void setDimensions(int w, int h);
-    int getWidth() const { return rect.w; }
-    int getHeight() const { return rect.h; }
+    [[nodiscard]] int getWidth() const { return rect.w; }
+    [[nodiscard]] int getHeight() const { return rect.h; }
 
     void setPosition(int x, int y);
     SDL_Texture* getTexture();
@@ -35,6 +35,12 @@ public:
     Uint32* getPixels();
 
     void clear(Uint32 color = 0xFFFFFFFF);
+    [[nodiscard]] std::pair<int, int> getPosition() const override {
+        return {rect.x, rect.y};
+    }
+    [[nodiscard]] std::pair<int, int> getDimensions() const override {
+        return {rect.w, rect.h};
+    }
 
 private:
     SDL_Rect rect;       // SDL_Rect to store position and size

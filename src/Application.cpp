@@ -6,7 +6,7 @@
 */
 
 #include "Application.hpp"
-#include "Dock.hpp"
+#include "tabs/Dock.hpp"
 #include "MenuBar.hpp"
 #include "ImageField.hpp"
 
@@ -46,7 +46,10 @@ int Application::run() {
 
 void Application::init() {
     menuBar = new MenuBar(800);
-    leftDock = new Dock(200, {}, LEFT, {new Tab("Tools", "assets/icons/brush.png", false)});
+    leftDock = new Dock(200, {}, LEFT);
+    const auto dockLeft = dynamic_cast<Dock *>(leftDock);
+    dockLeft->add_tab(new ToolTab("Tools", "assets/icons/brush.png", false, leftDock));
+
     rightDock = new Dock(200, {}, RIGHT);
     imageField = new ImageField(200, 200, renderer);
     FileManager::getInstance().setImageField(imageField);

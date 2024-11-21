@@ -67,7 +67,7 @@ void ImageField::drawPixel(int mouseX, int mouseY) {
     }
 }
 
-void ImageField::setTextureFromPath(const char* path, SDL_Renderer* renderer) {
+void ImageField::setTextureFromPath(const char* path) {
     SDL_Surface* surface = IMG_Load(path);
     if (surface) {
         memcpy(pixels, surface->pixels, rect.w * rect.h * sizeof(Uint32));

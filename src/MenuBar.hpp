@@ -15,10 +15,10 @@
 #include "buttons/Button.hpp"
 #include "IUIElement.hpp"
 
-class MenuBar : public IUIElement {
+class MenuBar final : public IUIElement {
 public:
-    MenuBar(int x);
-    ~MenuBar() = default;
+    explicit MenuBar(int x);
+    ~MenuBar() override = default;
     
     void init_file_menu();
     void init_edit_menu();
@@ -32,11 +32,17 @@ public:
     void init_window_menu();
     void init_help_menu();
 
-    void render(SDL_Renderer* renderer);
-    void handleEvent(const SDL_Event& event) {
-        for (auto& item : _menu_items) {
+    void render(SDL_Renderer* renderer) override;
+    void handleEvent(const SDL_Event& event) override {
+        for (const auto& item : _menu_items) {
             item->handleEvent(event);
         }
+    }
+    [[nodiscard]] std::pair<int, int> getPosition() const override {
+        return {rect.x, rect.y};
+    }
+    [[nodiscard]] std::pair<int, int> getDimensions() const override {
+        return {rect.w, rect.h};
     }
 
 private:

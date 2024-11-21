@@ -6,9 +6,9 @@
 */
 
 #include "Dock.hpp"
-#include "Application.hpp"
+#include "../Application.hpp"
 
-Dock::Dock(const int width, const std::vector<Tab*>& initial_tabs, const DockPosition position, const std::vector<Tab *>& dock_tabs, const SDL_Color color)
+Dock::Dock(const int width, const std::vector<ATab*>& initial_tabs, const DockPosition position, const std::vector<ATab *>& dock_tabs, const SDL_Color color)
     : width(width), hidden(false), active_tab(0), tabs(initial_tabs), color(color), position(position)
 {
     SDL_Rect button_area = {0, 0, 0, 0};
@@ -47,6 +47,9 @@ Dock::Dock(const int width, const std::vector<Tab*>& initial_tabs, const DockPos
 
 void Dock::handleEvent(const SDL_Event& event) {
     dragDockButton->handleEvent(event);
+    for (const auto& tab : tabs) {
+        tab->handleEvent(event);
+    }
 }
 
 void Dock::maintainRatio(SDL_Renderer* renderer) {
@@ -118,7 +121,7 @@ void Dock::render(SDL_Renderer* renderer) {
     }
 }
 
-void Dock::add_tab(Tab* tab) {
+void Dock::add_tab(ATab* tab) {
     tabs.push_back(tab);
 }
 

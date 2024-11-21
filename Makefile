@@ -13,16 +13,17 @@ MAIN_OBJ	=	$(MAIN:.cpp=.o)
 SRC_FILES 	=	Application.cpp \
 				WindowManager.cpp \
 				MenuBar.cpp \
-				Tab.cpp \
-				Dock.cpp \
+				tabs/ATab.cpp \
+				tabs/Dock.cpp \
 				buttons/AButton.cpp \
 				buttons/Button.cpp \
 				buttons/DraggableButton.cpp \
 				buttons/DropdownButton.cpp \
+				buttons/DropdownManager.cpp \
 				ImageField.cpp \
 				EventManager.cpp \
-				buttons/DropdownManager.cpp \
 				FileManager.cpp \
+				tabs/ToolTab.cpp \
 
 SRC_DIR 	=	src/
 SRC		=	$(addprefix $(SRC_DIR), $(SRC_FILES))

@@ -20,26 +20,33 @@ class AButton : public IButton {
 public:
     AButton(const std::string& label, int x, int y, int width, int height, SDL_Color color, bool toggable = true);
     AButton(const std::string& label, SDL_Rect *rect, SDL_Color color, bool toggable = true);
-    virtual ~AButton();
+    ~AButton() override;
 
     // Setters
-    void setPosition(int x, int y);
-    void setDimensions(int width, int height);
+    void setPosition(int x, int y) override;
+    void setDimensions(int width, int height) override;
     void setLabel(const std::string& label);
     void setFont(TTF_Font* font);
     void setColor(SDL_Color color);
     void setDefaultCallbacks();
 
     // Callback setters
-    void setOnClick(std::function<void()> onClickCallback);
-    void setOnHover(std::function<void()> onHoverCallback);
-    void setOnRelease(std::function<void()> onReleaseCallback);
+    void setOnClick(std::function<void()> onClickCallback) override;
+    void setOnHover(std::function<void()> onHoverCallback) override;
+    void setOnRelease(std::function<void()> onReleaseCallback) override;
 
     // Getters
-    std::string getLabel() const;
-    SDL_Rect *getRect() const;
-    TTF_Font* getFont() const;
-    SDL_Color getColor() const;
+    [[nodiscard]] std::string getLabel() const;
+    [[nodiscard]] SDL_Rect *getRect() const;
+    [[nodiscard]] TTF_Font* getFont() const;
+    [[nodiscard]] SDL_Color getColor() const;
+
+    [[nodiscard]] std::pair<int, int> getPosition() const override {
+        return {rect->x, rect->y};
+    }
+    [[nodiscard]] std::pair<int, int> getDimensions() const override {
+        return {rect->w, rect->h};
+    }
 
     // Event handlers
     virtual void handleEvent(const SDL_Event& event);

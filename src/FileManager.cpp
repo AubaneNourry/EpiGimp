@@ -28,7 +28,7 @@ SDL_Texture* FileManager::loadTexture(const std::string& path) {
     }
 
     if (!surface) {
-        SDL_Log("Failed to load image: %s, SDL_image Error: %s", path, IMG_GetError());
+        std::cerr << "Failed to load image: " << path << ", SDL_image Error: " << IMG_GetError() << std::endl;
         return nullptr;
     }
     SDL_Renderer *renderer = Application::getInstance().getRenderer();
@@ -36,7 +36,7 @@ SDL_Texture* FileManager::loadTexture(const std::string& path) {
 
     SDL_FreeSurface(surface);
     if (!texture) {
-        SDL_Log("Failed to create texture from surface: %s, SDL Error: %s", path, SDL_GetError());
+        std::cerr << "Failed to load image: " << path << ", SDL_image Error: " << IMG_GetError() << std::endl;
         return nullptr;
     }
     return texture;
