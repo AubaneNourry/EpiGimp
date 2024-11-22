@@ -11,9 +11,9 @@
 #include "AButton.hpp"
 #include <iostream>
 
-class Button : public AButton {
+class Button final : public AButton {
 public:
-    Button(const std::string& label, SDL_Rect *rect, SDL_Color color = UICOLOR, bool toggle = false);
+    Button(const std::string& label, SDL_Rect *rect, SDL_Color color = UICOLOR, SDL_Texture *image = nullptr, bool toggle = false);
 
     void render(SDL_Renderer* renderer) override;
 };

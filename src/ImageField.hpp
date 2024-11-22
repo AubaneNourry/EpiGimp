@@ -13,28 +13,28 @@
 #include "IUIElement.hpp"
 
 
-class ImageField : public IUIElement {
+class ImageField final : public IUIElement {
 public:
     ImageField(int w, int h, SDL_Renderer* renderer);
     ~ImageField() override;
 
     void render(SDL_Renderer* renderer) override;
     void handleEvent(const SDL_Event& event) override;
-    void setTextureFromPath(const char* path);
+    void setTextureFromPath(const char* path) const;
 
     void setDimensions(int w, int h);
     [[nodiscard]] int getWidth() const { return rect.w; }
     [[nodiscard]] int getHeight() const { return rect.h; }
 
     void setPosition(int x, int y);
-    SDL_Texture* getTexture();
+    [[nodiscard]] SDL_Texture* getTexture() const;
     void setTexture(SDL_Texture* texture);
     void updateTexture() const;
 
     void setPixels(Uint32* pixels);
-    Uint32* getPixels();
+    [[nodiscard]] Uint32* getPixels() const;
 
-    void clear(Uint32 color = 0xFFFFFFFF);
+    void clear(Uint32 color = 0xFFFFFFFF) const;
     [[nodiscard]] std::pair<int, int> getPosition() const override {
         return {rect.x, rect.y};
     }
@@ -43,13 +43,13 @@ public:
     }
 
 private:
-    SDL_Rect rect;       // SDL_Rect to store position and size
+    SDL_Rect rect{};
     SDL_Texture* texture;
-    Uint32* pixels;      // Pixel buffer to hold texture data
-    int pitch;           // Pitch of the texture
+    Uint32* pixels;
+    int pitch{};
 
-    bool isDrawing;      // Tracks if the mouse button is being pressed
-    void drawPixel(int mouseX, int mouseY);
+    bool isDrawing;
+    void drawPixel(int mouseX, int mouseY) const;
 };
 
 #endif // IMAGEFIELD_HPP

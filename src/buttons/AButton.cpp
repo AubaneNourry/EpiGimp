@@ -6,15 +6,17 @@
 */
 
 #include "AButton.hpp"
+
+#include <utility>
 #include "../Application.hpp"
 
-AButton::AButton(const std::string& label, int x, int y, int width, int height, SDL_Color color, bool toggable)
-    : label(label), rect(new SDL_Rect({x, y, width, height})), font(Application::getInstance().getFont()), color(color), toggable(toggable) {
+AButton::AButton(std::string  label, const int x, const int y, const int width, const int height, const SDL_Color color, SDL_Texture *image, const bool toggable)
+    : label(std::move(label)), image(image), rect(new SDL_Rect({x, y, width, height})), font(Application::getInstance().getFont()), color(color), toggable(toggable) {
         setDefaultCallbacks();
     }
 
-AButton::AButton(const std::string& label, SDL_Rect *rect, SDL_Color color, bool toggable)
-    : label(label), rect(rect), font(Application::getInstance().getFont()), color(color), toggable(toggable) {
+AButton::AButton(std::string  label, SDL_Rect *rect, const SDL_Color color, SDL_Texture *image, const bool toggable)
+    : label(std::move(label)), image(image), rect(rect), font(Application::getInstance().getFont()), color(color), toggable(toggable) {
         setDefaultCallbacks();
     }
 
@@ -92,6 +94,14 @@ SDL_Color AButton::getColor() const {
     return color;
 }
 
+SDL_Texture* AButton::getImage() const {
+    return image;
+}
+
+void AButton::setImage(SDL_Texture *image) {
+    this->image = image;
+}
+
 void AButton::createTextTexture(SDL_Renderer* renderer) {
     if (textTexture) {
         SDL_DestroyTexture(textTexture);
@@ -130,6 +140,12 @@ void AButton::renderButtonLabel(SDL_Renderer* renderer) {
         20
     };
     SDL_RenderCopy(renderer, textTexture, nullptr, &padded_rect);
+}
+
+void AButton::renderButtonImage(SDL_Renderer* renderer) {
+    if (image) {
+        SDL_RenderCopy(renderer, image, nullptr, rect);
+    }
 }
 
 void AButton::handleEvent(const SDL_Event& event) {

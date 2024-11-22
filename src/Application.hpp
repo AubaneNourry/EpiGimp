@@ -14,7 +14,7 @@
 #include "WindowManager.hpp"
 #include "FileManager.hpp"
 #include "IUIElement.hpp"
-#include "EventManager.hpp"
+#include "events/EventManager.hpp"
 
 class Application {
 public:

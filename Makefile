@@ -21,7 +21,9 @@ SRC_FILES 	=	Application.cpp \
 				buttons/DropdownButton.cpp \
 				buttons/DropdownManager.cpp \
 				ImageField.cpp \
-				EventManager.cpp \
+				events/EventManager.cpp \
+				events/Shortcuts.cpp \
+				events/Shortcut.cpp \
 				FileManager.cpp \
 				tabs/ToolTab.cpp \
 

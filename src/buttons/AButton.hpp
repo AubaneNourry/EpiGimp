@@ -18,8 +18,8 @@
 
 class AButton : public IButton {
 public:
-    AButton(const std::string& label, int x, int y, int width, int height, SDL_Color color, bool toggable = true);
-    AButton(const std::string& label, SDL_Rect *rect, SDL_Color color, bool toggable = true);
+    AButton(std::string  label, int x, int y, int width, int height, SDL_Color color, SDL_Texture *image = nullptr, bool toggable = true);
+    AButton(std::string  label, SDL_Rect *rect, SDL_Color color, SDL_Texture *image = nullptr, bool toggable = true);
     ~AButton() override;
 
     // Setters
@@ -29,6 +29,7 @@ public:
     void setFont(TTF_Font* font);
     void setColor(SDL_Color color);
     void setDefaultCallbacks();
+    void setImage(SDL_Texture *image);
 
     // Callback setters
     void setOnClick(std::function<void()> onClickCallback) override;
@@ -40,6 +41,7 @@ public:
     [[nodiscard]] SDL_Rect *getRect() const;
     [[nodiscard]] TTF_Font* getFont() const;
     [[nodiscard]] SDL_Color getColor() const;
+    [[nodiscard]] SDL_Texture* getImage() const;
 
     [[nodiscard]] std::pair<int, int> getPosition() const override {
         return {rect->x, rect->y};
@@ -54,6 +56,7 @@ public:
 
 protected:
     std::string label;
+    SDL_Texture* image;
     SDL_Rect *rect;
     TTF_Font* font;
     SDL_Color color;
@@ -69,6 +72,7 @@ protected:
     // Helper functions for rendering
     virtual void renderButtonRect(SDL_Renderer* renderer);
     virtual void renderButtonLabel(SDL_Renderer* renderer);
+    virtual void renderButtonImage(SDL_Renderer* renderer);
 
 private:
     SDL_Texture* textTexture = nullptr;

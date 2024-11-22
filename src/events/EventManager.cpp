@@ -6,6 +6,7 @@
 */
 
 #include "EventManager.hpp"
+#include "Shortcuts.hpp"
 
 void EventManager::registerElement(IUIElement* element) {
     elements.push_back(element);
@@ -22,6 +23,18 @@ void EventManager::handleEvents() {
             shouldQuit = true;
             return;
         }
+        if (event.type == SDL_KEYDOWN)
+        {
+            if (std::find(_keysPressed.begin(), _keysPressed.end(), event.key.keysym.sym) == _keysPressed.end())
+            {
+                _keysPressed.push_back(event.key.keysym.sym);
+            }
+        }
+        if (event.type == SDL_KEYUP)
+        {
+            _keysPressed.erase(std::remove(_keysPressed.begin(), _keysPressed.end(), event.key.keysym.sym), _keysPressed.end());
+        }
+        Shortcuts::getInstance().handleEvents(_keysPressed);
         for (auto& element : elements) {
             element->handleEvent(event);
         }
@@ -72,4 +85,8 @@ bool EventManager::_triggerEventFromEventName(const std::string& eventName, cons
         listener(eventData);
     }
     return true;
+}
+
+void EventManager::setQuitStatus(bool status) {
+    shouldQuit = status;
 }

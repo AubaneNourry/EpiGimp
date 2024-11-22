@@ -7,10 +7,14 @@
 
 #include "Button.hpp"
 
-Button::Button(const std::string& label, SDL_Rect *rect, SDL_Color color, bool toggle)
-    : AButton(label, rect, color, toggle) {}
+Button::Button(const std::string& label, SDL_Rect *rect, const SDL_Color color, SDL_Texture *image, const bool toggle)
+    : AButton(label, rect, color, image, toggle) {}
 
 void Button::render(SDL_Renderer* renderer) {
-    renderButtonRect(renderer);
+    //if (image) {
+    //    SDL_RenderCopy(renderer, image, nullptr, rect);
+    //} else {
+        renderButtonRect(renderer);
+    //}
     renderButtonLabel(renderer);
 }

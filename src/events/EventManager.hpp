@@ -15,7 +15,7 @@
 #include <functional>
 #include <ctime>
 #include <iostream>
-#include "IUIElement.hpp"
+#include "../IUIElement.hpp"
 
 class EventData {
 public:
@@ -36,6 +36,7 @@ public:
     void unregisterElement(IUIElement* element);
     void handleEvents();
     bool getQuitStatus() const;
+    void setQuitStatus(bool status);
 
     static EventManager& getInstance();
 
@@ -44,7 +45,7 @@ private:
     ~EventManager() = default;
     std::vector<IUIElement*> elements;
     bool shouldQuit = false;
-
+    std::vector<SDL_Keycode> _keysPressed;
     bool _triggerEventFromEventName(const std::string& eventName, const EventData& eventData);
     std::unordered_map<std::string, std::vector<std::pair<int, EventConsumer>>> _listeners;
 };

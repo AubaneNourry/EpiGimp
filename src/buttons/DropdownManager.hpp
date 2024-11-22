@@ -8,7 +8,7 @@
 #ifndef DROPDOWNMANAGER_HPP
 #define DROPDOWNMANAGER_HPP
 
-#include "../EventManager.hpp"
+#include "../events/EventManager.hpp"
 #include <vector>
 
 class DropdownButton;

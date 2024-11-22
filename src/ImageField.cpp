@@ -8,11 +8,12 @@
 #include "ImageField.hpp"
 #include <iostream>
 
-ImageField::ImageField(int w, int h, SDL_Renderer* renderer)
-    : texture(nullptr), pixels(nullptr), isDrawing(false) {
+ImageField::ImageField(const int w, const int h, SDL_Renderer* renderer)
+    : texture(nullptr), pixels(nullptr), pitch(0), isDrawing(false)
+{
     int windowWidth, windowHeight;
     SDL_GetRendererOutputSize(renderer, &windowWidth, &windowHeight);
-    rect = { windowWidth / 2 - w / 2, windowHeight / 2 - h / 2, w, h };
+    rect = {windowWidth / 2 - w / 2, windowHeight / 2 - h / 2, w, h};
     pixels = new Uint32[w * h];
     memset(pixels, 255, w * h * sizeof(Uint32));
     texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, w, h);
@@ -27,7 +28,7 @@ ImageField::~ImageField() {
 
 void ImageField::render(SDL_Renderer* renderer) {
     updateTexture();
-    SDL_RenderCopy(renderer, texture, NULL, &rect);
+    SDL_RenderCopy(renderer, texture, nullptr, &rect);
 }
 
 void ImageField::handleEvent(const SDL_Event& event) {
@@ -55,21 +56,20 @@ void ImageField::handleEvent(const SDL_Event& event) {
     }
 }
 
-void ImageField::drawPixel(int mouseX, int mouseY) {
+void ImageField::drawPixel(const int mouseX, const int mouseY) const {
     if (mouseX >= rect.x && mouseX < rect.x + rect.w &&
         mouseY >= rect.y && mouseY < rect.y + rect.h) {
-
-        int relativeX = mouseX - rect.x;
-        int relativeY = mouseY - rect.y;
+        const int relativeX = mouseX - rect.x;
+        const int relativeY = mouseY - rect.y;
 
         pixels[relativeY * rect.w + relativeX] = 0x000000FF;
         updateTexture();
     }
 }
 
-void ImageField::setTextureFromPath(const char* path) {
-    SDL_Surface* surface = IMG_Load(path);
-    if (surface) {
+void ImageField::setTextureFromPath(const char* path) const
+{
+    if (SDL_Surface* surface = IMG_Load(path)) {
         memcpy(pixels, surface->pixels, rect.w * rect.h * sizeof(Uint32));
         updateTexture();
         SDL_FreeSurface(surface);
@@ -95,7 +95,8 @@ void ImageField::updateTexture() const {
     SDL_UpdateTexture(texture, nullptr, pixels, rect.w * sizeof(Uint32));
 }
 
-SDL_Texture* ImageField::getTexture() {
+SDL_Texture* ImageField::getTexture() const
+{
     return texture;
 }
 
@@ -103,7 +104,7 @@ void ImageField::setTexture(SDL_Texture* texture) {
     this->texture = texture;
 }
 
-Uint32* ImageField::getPixels()
+Uint32* ImageField::getPixels() const
 {
     return pixels;
 }
@@ -113,13 +114,12 @@ void ImageField::setPixels(Uint32 *pixels)
     this->pixels = pixels;
 }
 
-void ImageField::clear(Uint32 color) {
+void ImageField::clear(const Uint32 color) const
+{
     if (pixels) {
-        // Set all pixels to the specified color
         for (int i = 0; i < rect.w * rect.h; ++i) {
             pixels[i] = color;
         }
-        // Update the texture with the new pixel data
-        updateTexture();  // Assuming WindowID 1, change as needed
+        updateTexture();
     }
 }
