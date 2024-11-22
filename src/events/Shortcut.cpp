@@ -7,22 +7,24 @@
 
 #include "Shortcut.hpp"
 
+#include <utility>
+
 Shortcut::Shortcut(std::string name, std::string description, std::function<void()> callback, std::vector<std::vector<SDL_Keycode>> keys)
-    : _name(name), _description(description), _callback(callback), _keys(keys)
+    : _name(std::move(name)), _description(std::move(description)), _callback(std::move(callback)), _keys(std::move(keys))
 {
 }
 
-void Shortcut::addKey(std::vector<SDL_Keycode> key)
+void Shortcut::addKey(const std::vector<SDL_Keycode>& key)
 {
     _keys.push_back(key);
 }
 
-void Shortcut::removeKey(std::vector<SDL_Keycode> key)
+void Shortcut::removeKey(const std::vector<SDL_Keycode>& key)
 {
     _keys.erase(std::remove(_keys.begin(), _keys.end(), key), _keys.end());
 }
 
-void Shortcut::setKeys(std::vector<std::vector<SDL_Keycode>> keys)
+void Shortcut::setKeys(const std::vector<std::vector<SDL_Keycode>>& keys)
 {
     _keys = keys;
 }

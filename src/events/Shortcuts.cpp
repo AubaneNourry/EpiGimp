@@ -16,12 +16,12 @@ void Shortcuts::unregisterShortcut(Shortcut *shortcut) {
     _shortcuts.erase(std::remove(_shortcuts.begin(), _shortcuts.end(), shortcut), _shortcuts.end());
 }
 
-void Shortcuts::registerShortcut(std::string name, std::string description, std::function<void()> callback, std::vector<std::vector<SDL_Keycode>> keys) {
+void Shortcuts::registerShortcut(const std::string& name, const std::string& description, const std::function<void()>& callback, const std::vector<std::vector<SDL_Keycode>>& keys) {
     _shortcuts.push_back(new Shortcut(name, description, callback, keys));
 }
 
-void Shortcuts::unregisterShortcut(std::string name) {
-    for (auto& shortcut : _shortcuts) {
+void Shortcuts::unregisterShortcut(const std::string& name) {
+    for (const auto& shortcut : _shortcuts) {
         if (shortcut->getName() == name) {
             _shortcuts.erase(std::remove(_shortcuts.begin(), _shortcuts.end(), shortcut), _shortcuts.end());
             return;
@@ -29,8 +29,8 @@ void Shortcuts::unregisterShortcut(std::string name) {
     }
 }
 
-void Shortcuts::addKeyToShortcut(std::string name, std::vector<SDL_Keycode> key) {
-    for (auto& shortcut : _shortcuts) {
+void Shortcuts::addKeyToShortcut(const std::string& name, const std::vector<SDL_Keycode>& key) {
+    for (const auto& shortcut : _shortcuts) {
         if (shortcut->getName() == name) {
             shortcut->addKey(key);
             return;
@@ -38,8 +38,8 @@ void Shortcuts::addKeyToShortcut(std::string name, std::vector<SDL_Keycode> key)
     }
 }
 
-void Shortcuts::removeKeyFromShortcut(std::string name, std::vector<SDL_Keycode> key) {
-    for (auto& shortcut : _shortcuts) {
+void Shortcuts::removeKeyFromShortcut(const std::string& name, const std::vector<SDL_Keycode>& key) {
+    for (const auto& shortcut : _shortcuts) {
         if (shortcut->getName() == name) {
             shortcut->removeKey(key);
             return;
@@ -47,8 +47,8 @@ void Shortcuts::removeKeyFromShortcut(std::string name, std::vector<SDL_Keycode>
     }
 }
 
-void Shortcuts::handleEvents(std::vector<SDL_Keycode> keysPressed) {
-    for (auto& shortcut : _shortcuts) {
+void Shortcuts::handleEvents(const std::vector<SDL_Keycode>& keysPressed) {
+    for (const auto& shortcut : _shortcuts) {
         shortcut->handleEvent(keysPressed);
     }
 }

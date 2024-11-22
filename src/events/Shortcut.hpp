@@ -22,9 +22,9 @@ public:
     [[nodiscard]] std::string getName() const { return _name; }
     [[nodiscard]] std::string getDescription() const { return _description; }
     [[nodiscard]] std::vector<std::vector<SDL_Keycode>> getKeys() const { return _keys; }
-    void addKey(std::vector<SDL_Keycode> key);
-    void removeKey(std::vector<SDL_Keycode> key);
-    void setKeys(std::vector<std::vector<SDL_Keycode>> keys);
+    void addKey(const std::vector<SDL_Keycode>& key);
+    void removeKey(const std::vector<SDL_Keycode>& key);
+    void setKeys(const std::vector<std::vector<SDL_Keycode>>& keys);
 
     void handleEvent(std::vector<SDL_Keycode> keysPressed);
 private:

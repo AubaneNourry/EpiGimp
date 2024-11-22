@@ -16,11 +16,12 @@ class Shortcuts {
 public:
   void registerShortcut(Shortcut *shortcut);
   void unregisterShortcut(Shortcut *shortcut);
-  void registerShortcut(std::string name, std::string description, std::function<void()> callback, std::vector<std::vector<SDL_Keycode>> keys);
-  void unregisterShortcut(std::string name);
-  void addKeyToShortcut(std::string name, std::vector<SDL_Keycode> key);
-  void removeKeyFromShortcut(std::string name, std::vector<SDL_Keycode> key);
-  void handleEvents(std::vector<SDL_Keycode> keysPressed);
+  void registerShortcut(const std::string& name, const std::string& description, const std::function<void()>& callback, const std::vector<std::
+                        vector<SDL_Keycode>>& keys);
+  void unregisterShortcut(const std::string& name);
+  void addKeyToShortcut(const std::string& name, const std::vector<SDL_Keycode>& key);
+  void removeKeyFromShortcut(const std::string& name, const std::vector<SDL_Keycode>& key);
+  void handleEvents(const std::vector<SDL_Keycode>& keysPressed);
 
   void registerBaseShortcuts();
 
