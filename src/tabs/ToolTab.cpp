@@ -22,8 +22,8 @@ ToolTab::ToolTab(std::string tab_name, const std::string &icon_path, bool is_rem
 void ToolTab::render(SDL_Renderer *renderer)
 {
     SDL_Rect tabRect = {getPosition().first, getPosition().second, getDimensions().first, getDimensions().second / 3};
-    //SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
-    //SDL_RenderFillRect(renderer, &tabRect);
+    SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
+    SDL_RenderFillRect(renderer, &tabRect);
     for (auto &element : content) {
         //std::cout << "rendering element in: " << getPosition().first << " " << getPosition().second << " size: " << getDimensions().first << " " << getDimensions().second << std::endl;
         element->render(renderer);

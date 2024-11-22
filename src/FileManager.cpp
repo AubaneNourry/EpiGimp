@@ -42,18 +42,40 @@ SDL_Texture* FileManager::loadTexture(const std::string& path) {
     return texture;
 }
 
+SDL_Surface* FileManager::loadSurface(const std::string& path) {
+    const std::string& filePath = path;
+    const std::string extension = filePath.substr(filePath.find_last_of('.') + 1);
+    SDL_Surface* surface = nullptr;
+
+    if (extension == "bmp") {
+        surface = SDL_LoadBMP(path.c_str());
+    } else if (extension == "png" || extension == "jpg" || extension == "jpeg" || extension == "tif" || extension == "tiff") {
+        surface = IMG_Load(path.c_str());
+    } else {
+        std::cerr << "Unsupported file format: " << extension << std::endl;
+        return nullptr;
+    }
+
+    if (!surface) {
+        std::cerr << "Failed to load image: " << path << ", SDL_image Error: " << IMG_GetError() << std::endl;
+        return nullptr;
+    }
+    return surface;
+}
+
 void FileManager::setImageField(IUIElement *imageField) {
     this->imageField = dynamic_cast<ImageField*>(imageField);
 }
 
-void FileManager::newImageField() {
+void FileManager::newImageField() const
+{
     imageField->clear();
 }
 
-void FileManager::saveImage() {
-    SDL_Texture* texture = static_cast<ImageField*>(imageField)->getTexture();
-    int width = static_cast<ImageField*>(imageField)->getWidth();
-    int height = static_cast<ImageField*>(imageField)->getHeight();
+void FileManager::saveImage() const
+{
+    SDL_Texture* texture = imageField->getTexture();
+    auto [height, width] = imageField->getDimensions();
     SDL_Surface* surface = SDL_CreateRGBSurface(0, width, height, 32, 0xFF0000, 0x00FF00, 0x0000FF, 0x000000);
     
     if (!surface) {
@@ -62,7 +84,7 @@ void FileManager::saveImage() {
     }
 
     SDL_Renderer* renderer = Application::getInstance().getRenderer();
-    SDL_Texture* targetTexture = SDL_CreateTexture(renderer, surface->format->format, SDL_TEXTUREACCESS_TARGET, width, height);
+    SDL_Texture* targetTexture = SDL_CreateTexture(renderer, surface->format->format, SDL_TEXTUREACCESS_TARGET, height, width);
     if (!targetTexture) {
         std::cerr << "Failed to create texture: " << SDL_GetError() << std::endl;
         SDL_FreeSurface(surface);

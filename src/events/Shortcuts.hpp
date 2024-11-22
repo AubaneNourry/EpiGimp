@@ -21,7 +21,7 @@ public:
   void unregisterShortcut(const std::string& name);
   void addKeyToShortcut(const std::string& name, const std::vector<SDL_Keycode>& key);
   void removeKeyFromShortcut(const std::string& name, const std::vector<SDL_Keycode>& key);
-  void handleEvents(const std::vector<SDL_Keycode>& keysPressed);
+  void handleEvents(std::vector<SDL_Keycode>* keysPressed);
 
   void registerBaseShortcuts();
 

@@ -26,7 +26,7 @@ public:
     void removeKey(const std::vector<SDL_Keycode>& key);
     void setKeys(const std::vector<std::vector<SDL_Keycode>>& keys);
 
-    void handleEvent(std::vector<SDL_Keycode> keysPressed);
+    void handleEvent(std::vector<SDL_Keycode>* keysPressed);
 private:
     std::string _name;
     std::string _description;

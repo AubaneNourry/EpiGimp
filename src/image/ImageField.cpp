@@ -7,6 +7,8 @@
 
 #include "ImageField.hpp"
 #include <iostream>
+#include "../FileManager.hpp"
+#include "Tools.hpp"
 
 ImageField::ImageField(const int w, const int h, SDL_Renderer* renderer)
     : texture(nullptr), pixels(nullptr), pitch(0), isDrawing(false)
@@ -40,7 +42,8 @@ void ImageField::handleEvent(const SDL_Event& event) {
             if (mouseX >= rect.x && mouseX < rect.x + rect.w &&
                 mouseY >= rect.y && mouseY < rect.y + rect.h) {
                 isDrawing = true;
-                drawPixel(mouseX, mouseY);
+                Tools::getInstance().draw(mouseX, mouseY, rect, pixels);
+                updateTexture();
             }
             break;
         case SDL_MOUSEBUTTONUP:
@@ -48,7 +51,8 @@ void ImageField::handleEvent(const SDL_Event& event) {
             break;
         case SDL_MOUSEMOTION:
             if (isDrawing) {
-                drawPixel(mouseX, mouseY);
+                Tools::getInstance().draw(mouseX, mouseY, rect, pixels);
+                updateTexture();
             }
             break;
         default:
@@ -56,20 +60,9 @@ void ImageField::handleEvent(const SDL_Event& event) {
     }
 }
 
-void ImageField::drawPixel(const int mouseX, const int mouseY) const {
-    if (mouseX >= rect.x && mouseX < rect.x + rect.w &&
-        mouseY >= rect.y && mouseY < rect.y + rect.h) {
-        const int relativeX = mouseX - rect.x;
-        const int relativeY = mouseY - rect.y;
-
-        pixels[relativeY * rect.w + relativeX] = 0x000000FF;
-        updateTexture();
-    }
-}
-
 void ImageField::setTextureFromPath(const char* path) const
 {
-    if (SDL_Surface* surface = IMG_Load(path)) {
+    if (SDL_Surface* surface = FileManager::loadSurface(path)) {
         memcpy(pixels, surface->pixels, rect.w * rect.h * sizeof(Uint32));
         updateTexture();
         SDL_FreeSurface(surface);

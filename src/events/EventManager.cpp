@@ -34,7 +34,7 @@ void EventManager::handleEvents() {
         {
             _keysPressed.erase(std::remove(_keysPressed.begin(), _keysPressed.end(), event.key.keysym.sym), _keysPressed.end());
         }
-        Shortcuts::getInstance().handleEvents(_keysPressed);
+        Shortcuts::getInstance().handleEvents(&_keysPressed);
         for (auto& element : elements) {
             element->handleEvent(event);
         }

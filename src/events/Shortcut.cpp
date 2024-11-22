@@ -29,11 +29,14 @@ void Shortcut::setKeys(const std::vector<std::vector<SDL_Keycode>>& keys)
     _keys = keys;
 }
 
-void Shortcut::handleEvent(std::vector<SDL_Keycode> keysPressed)
+void Shortcut::handleEvent(std::vector<SDL_Keycode>* keysPressed)
 {
     for (auto &key : _keys) {
-        if (std::includes(keysPressed.begin(), keysPressed.end(), key.begin(), key.end())) {
+        if (std::includes(keysPressed->begin(), keysPressed->end(), key.begin(), key.end())) {
             _callback();
+            for (auto &k : key) {
+                keysPressed->erase(std::remove(keysPressed->begin(), keysPressed->end(), k), keysPressed->end());
+            }
         }
     }
 }

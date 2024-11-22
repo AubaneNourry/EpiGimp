@@ -13,7 +13,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-#include "ImageField.hpp"
+#include "image/ImageField.hpp"
 
 class FileManager {
 public:
@@ -22,9 +22,10 @@ public:
 
     static FileManager &getInstance();
     static SDL_Texture* loadTexture(const std::string& path);
+    static SDL_Surface* loadSurface(const std::string& path);
     void setImageField(IUIElement* imageField);
-    void newImageField();
-    void saveImage();
+    void newImageField() const;
+    void saveImage() const;
 
 private:
     ImageField* imageField;

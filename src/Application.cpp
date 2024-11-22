@@ -8,8 +8,9 @@
 #include "Application.hpp"
 #include "tabs/Dock.hpp"
 #include "MenuBar.hpp"
-#include "ImageField.hpp"
+#include "image/ImageField.hpp"
 #include "events/Shortcuts.hpp"
+#include "image/Tools.hpp"
 
 Application::Application(const char *appName, const char *defaultImagePath) {
     window = SDL_CreateWindow(appName, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN);
@@ -59,6 +60,7 @@ void Application::init() {
     EventManager::getInstance().registerElement(rightDock);
     EventManager::getInstance().registerElement(imageField);
     Shortcuts::getInstance().registerBaseShortcuts();
+    Tools::getInstance().init();
 }
 
 void Application::render() const

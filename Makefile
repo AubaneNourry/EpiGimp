@@ -20,7 +20,9 @@ SRC_FILES 	=	Application.cpp \
 				buttons/DraggableButton.cpp \
 				buttons/DropdownButton.cpp \
 				buttons/DropdownManager.cpp \
-				ImageField.cpp \
+				image/ImageField.cpp \
+				image/Tools.cpp \
+				image/Tool.cpp \
 				events/EventManager.cpp \
 				events/Shortcuts.cpp \
 				events/Shortcut.cpp \
