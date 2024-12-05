@@ -31,6 +31,15 @@ SRC_FILES 	=	Application.cpp \
 
 SRC_DIR 	=	src/
 SRC		=	$(addprefix $(SRC_DIR), $(SRC_FILES))
+
+SRC			 += \
+				imgui/imgui.cpp \
+				imgui/imgui_draw.cpp \
+				imgui/imgui_widgets.cpp \
+				imgui/imgui_tables.cpp \
+				imgui/backends/imgui_impl_sdl2.cpp \
+				imgui/backends/imgui_impl_sdlrenderer2.cpp \
+
 SRC_OBJ	=	$(SRC:.cpp=.o)
 
 OBJ		= $(SRC_OBJ) $(MAIN_OBJ)
@@ -49,9 +58,9 @@ TEST_GCNO 	=	$(SRC:.cpp=.gcno)
 NAME 	=	epiGimp
 
 # Flags
-IFLAGS 	=	-I./include
+IFLAGS 	=	-I./include -Iimgui -Iimgui/backends
 CFLAGS 	=	-Wall -Wextra -g `sdl2-config --cflags` -I/usr/include/SDL2
-LFLAGS  =   `sdl2-config --libs` -lSDL2_image -lSDL2_ttf -lSDL2_image
+LFLAGS  =   `sdl2-config --libs` -lSDL2_image -lSDL2_ttf -lSDL2_image -lSDL2 -lGL
 
 # Compiler
 CC = g++
