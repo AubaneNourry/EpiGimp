@@ -16,6 +16,8 @@
 #include "IUIElement.hpp"
 #include "events/EventManager.hpp"
 
+#include "imgui.h"
+
 class Application {
 public:
     int run();
@@ -29,6 +31,8 @@ public:
     }
     Application(const char *appName, const char *defaultImagePath);
     void init();
+    void initDearImGUI();
+    void initFonts();
     [[nodiscard]] SDL_Renderer *getRenderer() const { return renderer; }
     [[nodiscard]] SDL_Window *getWindow() const { return window; }
     void quit();
@@ -44,6 +48,8 @@ private:
     IUIElement* rightDock{};
     IUIElement* imageField{};
     TTF_Font* font;
+    ImGuiIO* io;
+    ImFont* imFont;
 };
 
 #endif // APPLICATION_HPP
