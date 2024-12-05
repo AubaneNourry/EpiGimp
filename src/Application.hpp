@@ -36,6 +36,7 @@ public:
     [[nodiscard]] SDL_Renderer *getRenderer() const { return renderer; }
     [[nodiscard]] SDL_Window *getWindow() const { return window; }
     void quit();
+    void RenderDrawingSurface(SDL_Renderer* renderer);
 private:
     void render() const;
     

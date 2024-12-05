@@ -26,6 +26,7 @@ public:
     void setImageField(IUIElement* imageField);
     void newImageField() const;
     void saveImage() const;
+    [[nodiscard]] ImageField* getImageField() const { return imageField; }
 
 private:
     ImageField* imageField;

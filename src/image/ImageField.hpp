@@ -18,6 +18,10 @@ public:
     ImageField(int w, int h, SDL_Renderer* renderer);
     ~ImageField() override;
 
+    void InitializeDrawingSurface(SDL_Renderer* renderer);
+    void UpdateTexture(SDL_Renderer* renderer);
+    void FreeDrawingSurface();
+
     void render(SDL_Renderer* renderer) override;
     void handleEvent(const SDL_Event& event) override;
     void setTextureFromPath(const char* path) const;
