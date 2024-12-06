@@ -44,7 +44,6 @@ public:
 
 private:
     SDL_Rect rect{};
-    SDL_Texture* texture;
     Uint32* pixels;
     int pitch{};
     bool isDrawing;

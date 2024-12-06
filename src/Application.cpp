@@ -11,6 +11,7 @@
 #include "image/ImageField.hpp"
 #include "events/Shortcuts.hpp"
 #include "image/Tools.hpp"
+#include "Layers.hpp"
 
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
@@ -105,6 +106,7 @@ void Application::init() {
     dockLeft->add_tab(new ToolTab("Tools", "assets/icons/brush.png", false, leftDock));
 
     rightDock = new Dock(200, {}, RIGHT);
+    layers = new Layers();
     imageField = new ImageField(200, 200, renderer);
     FileManager::getInstance().setImageField(imageField);
     EventManager::getInstance().registerElement(menuBar);
@@ -134,6 +136,7 @@ void Application::render() const
     leftDock->render(renderer);
     rightDock->render(renderer);
     menuBar->render(renderer);
+    layers->render(renderer);
     ImGui::Render();
     ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), renderer);
     SDL_RenderPresent(renderer);
