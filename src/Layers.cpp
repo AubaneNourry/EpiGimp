@@ -72,10 +72,10 @@ void Layers::render(SDL_Renderer* renderer)
             ImGui::EndDragDropTarget();
         }
 
-        /*if (layers[i].thumbnail) {
-            ImGui::Image((ImTextureID)layers[i].thumbnail, ImVec2(50, 50));
+        if (layers[i].thumbnail) {
+            ImGui::Image((ImTextureID)layers[i].thumbnail, ImVec2(30, 30));
             ImGui::SameLine();
-        }*/
+        }
 
         ImGui::Checkbox("##Visible", &layers[i].visible);
         ImGui::SameLine();
