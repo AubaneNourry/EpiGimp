@@ -13,8 +13,6 @@ MAIN_OBJ	=	$(MAIN:.cpp=.o)
 SRC_FILES 	=	Application.cpp \
 				WindowManager.cpp \
 				MenuBar.cpp \
-				tabs/ATab.cpp \
-				tabs/Dock.cpp \
 				buttons/AButton.cpp \
 				buttons/Button.cpp \
 				buttons/DraggableButton.cpp \
@@ -27,7 +25,6 @@ SRC_FILES 	=	Application.cpp \
 				events/Shortcuts.cpp \
 				events/Shortcut.cpp \
 				FileManager.cpp \
-				tabs/ToolTab.cpp \
 				Layers.cpp \
 
 SRC_DIR 	=	src/
