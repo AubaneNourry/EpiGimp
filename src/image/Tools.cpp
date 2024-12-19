@@ -185,24 +185,31 @@ void Tools::render(SDL_Renderer* renderer)
 {
     ImGui::Begin("Tool Settings", nullptr, ImGuiWindowFlags_NoCollapse);
 
-    // Color picker
-    ImGui::ColorEdit4("Color", rgba);
+    ImGui::Text("Brush Settings");
+    ImGui::ColorEdit3("Color (RGB)", rgba);
+    int opacityPercentage = static_cast<int>(rgba[3] * 100.0f);
+    if (ImGui::SliderInt("Opacity (%)", &opacityPercentage, 0, 100)) {
+        rgba[3] = opacityPercentage / 100.0f;
+    }
     _color = FloatRGBAToUint32(rgba);
 
-    // Size slider
     ImGui::SliderInt("Size", reinterpret_cast<int*>(&_size), 1, 100);
 
-    // Tool navigation buttons
-    if (ImGui::Button("Previous Tool")) {
-        previous();
-    }
-    ImGui::SameLine(); // Place the next button on the same line
-    if (ImGui::Button("Next Tool")) {
-        next();
+    ImGui::Separator();
+
+    ImGui::Text("Tools");
+    for (size_t i = 0; i < _tools.size(); ++i) {
+        if (ImGui::Button(_tools[i]->getName().c_str())) {
+            _currentToolIndex = i;
+        }
+        if ((i + 1) % 3 != 0) {
+            ImGui::SameLine();
+        }
     }
 
     ImGui::End();
 }
+
 
 #include <iostream>
 
