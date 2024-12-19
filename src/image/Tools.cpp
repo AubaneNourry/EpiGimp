@@ -169,7 +169,7 @@ void Tools::init()
 void Tools::next()
 {
     _currentToolIndex = (_currentToolIndex + 1) % _tools.size();
-    std::cout << "cuurent tool: " << _tools[_currentToolIndex]->getName() << std::endl;
+    std::cout << "current tool: " << _tools[_currentToolIndex]->getName() << std::endl;
 }
 
 void Tools::previous()

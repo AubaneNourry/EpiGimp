@@ -78,6 +78,9 @@ void Shortcuts::registerBaseShortcuts() {
     _shortcuts.push_back(new Shortcut("White", "Pencil goes white", []() {
         Tools::getInstance().setColor(0xFFFFFFFF);
     }, {{SDLK_LCTRL, SDLK_w}}));
+    _shortcuts.push_back(new Shortcut("Orange", "Pencil goes slightly transparent orange", []() {
+        Tools::getInstance().setColor(0xFFA50080); // ARGB: Alpha 50%, Orange
+    }, {{SDLK_LCTRL, SDLK_o}}));
     _shortcuts.push_back(new Shortcut("Size+", "Increase pencil size", []() {
         std::cout << "Size+" << std::endl;
         Tools::getInstance().setSize(Tools::getInstance().getSize() + 1 > 100 ? 100 : Tools::getInstance().getSize() + 1);

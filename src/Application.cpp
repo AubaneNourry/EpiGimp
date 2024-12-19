@@ -81,7 +81,28 @@ Application::Application(const char *appName, const char *defaultImagePath) {
     running = true;
 }
 
+uint32_t FloatRGBAToUint32(const float rgba[4]) {
+    // Convert float values (0.0 - 1.0) to Uint32 components
+    uint32_t r = static_cast<uint32_t>(rgba[0] * 255.0f) & 0xFF;
+    uint32_t g = static_cast<uint32_t>(rgba[1] * 255.0f) & 0xFF;
+    uint32_t b = static_cast<uint32_t>(rgba[2] * 255.0f) & 0xFF;
+    uint32_t a = static_cast<uint32_t>(rgba[3] * 255.0f) & 0xFF;
+
+    // Combine into ARGB format
+    return (r << 24) | (g << 16) | (b << 8) | a;
+}
+
+void Uint32ToFloatRGBA(uint32_t color, float rgba[4]) {
+    // Extract each component from the Uint32 (ARGB format)
+    rgba[0] = ((color >> 24) & 0xFF) / 255.0f; // Red
+    rgba[1] = ((color >> 16) & 0xFF) / 255.0f; // Green
+    rgba[2] = ((color >> 8) & 0xFF) / 255.0f;  // Blue
+    rgba[3] = (color & 0xFF) / 255.0f;         // Alpha
+}
+
 int Application::run() {
+    Uint32 color = 0x000000FF; // Black
+    float rgba[4] = {0.0f, 0.0f, 0.0f, 1.0f};
     while (status == 0 && !EventManager::getInstance().getQuitStatus() && running) {
         EventManager::getInstance().handleEvents();
         ImGui_ImplSDLRenderer2_NewFrame();
@@ -89,14 +110,8 @@ int Application::run() {
         ImGui::NewFrame();
 
         ImGui::Begin("Color Picker", nullptr, ImGuiWindowFlags_NoCollapse);
-        Uint32 color = Tools::getInstance().getColor();
-        float r = (color >> 24) & 0xFF;
-    	float g = (color >> 16) & 0xFF;
-    	float b = (color >> 8) & 0xFF;
-
-        float colorPicker[4] = {r / 255, g / 255, b / 255, 255};
-        ImGui::ColorEdit4("Color", (float*)&color, ImGuiColorEditFlags_NoInputs);
-        Tools::getInstance().setColor(color);
+        ImGui::ColorEdit4("Color", rgba);
+        Tools::getInstance().setColor(FloatRGBAToUint32(rgba));
         ImGui::End();
 
         render();
