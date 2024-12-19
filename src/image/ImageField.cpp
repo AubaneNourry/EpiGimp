@@ -24,6 +24,11 @@ ImageField::ImageField(const int w, const int h, SDL_Renderer* renderer)
     memset(pixels, 255, w * h * sizeof(Uint32));
     auto* layers = static_cast<Layers*>(Application::getInstance().getLayers());
     layers->getLayers().back().thumbnail = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, w, h);
+    if (layers->getLayers().back().thumbnail) {
+        SDL_SetTextureBlendMode(layers->getLayers().back().thumbnail, SDL_BLENDMODE_BLEND);
+    } else {
+        std::cerr << "Failed to create texture for layer thumbnail: " << SDL_GetError() << std::endl;
+    }
     updateTexture();
 }
 
@@ -76,7 +81,7 @@ void ImageField::render(SDL_Renderer* renderer) {
     SDL_SetRenderTarget(renderer, texture);
     for (auto& layer : layers->getLayers()) {
         if (layer.visible && layer.thumbnail) {
-            texture = layer.thumbnail;
+            SDL_RenderCopy(renderer, layer.thumbnail, nullptr, nullptr);
         }
     }
     SDL_SetRenderTarget(renderer, nullptr);
@@ -147,6 +152,13 @@ void ImageField::updateTexture() const {
 
 SDL_Texture* ImageField::getTexture() const
 {
+  	auto* layers = static_cast<Layers*>(Application::getInstance().getLayers());
+    int selected_layer = layers->getSelectedLayer();
+
+    if (selected_layer >= 0 && selected_layer < layers->getLayers().size()) {
+        Layer& currentLayer = layers->getLayers()[selected_layer];
+        return currentLayer.thumbnail;
+    }
     return nullptr;
 }
 

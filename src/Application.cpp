@@ -87,6 +87,18 @@ int Application::run() {
         ImGui_ImplSDLRenderer2_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
+
+        ImGui::Begin("Color Picker", nullptr, ImGuiWindowFlags_NoCollapse);
+        Uint32 color = Tools::getInstance().getColor();
+        float r = (color >> 24) & 0xFF;
+    	float g = (color >> 16) & 0xFF;
+    	float b = (color >> 8) & 0xFF;
+
+        float colorPicker[4] = {r / 255, g / 255, b / 255, 255};
+        ImGui::ColorEdit4("Color", (float*)&color, ImGuiColorEditFlags_NoInputs);
+        Tools::getInstance().setColor(color);
+        ImGui::End();
+
         render();
     }
     ImGui_ImplSDLRenderer2_Shutdown();
@@ -101,17 +113,10 @@ int Application::run() {
 
 void Application::init() {
     menuBar = new MenuBar();
-    leftDock = new Dock(200, {}, LEFT);
-    const auto dockLeft = dynamic_cast<Dock *>(leftDock);
-    dockLeft->add_tab(new ToolTab("Tools", "assets/icons/brush.png", false, leftDock));
-
-    rightDock = new Dock(200, {}, RIGHT);
     layers = new Layers();
     imageField = new ImageField(200, 200, renderer);
     FileManager::getInstance().setImageField(imageField);
     EventManager::getInstance().registerElement(menuBar);
-    EventManager::getInstance().registerElement(leftDock);
-    EventManager::getInstance().registerElement(rightDock);
     EventManager::getInstance().registerElement(imageField);
     Shortcuts::getInstance().registerBaseShortcuts();
     Tools::getInstance().init();
@@ -133,8 +138,6 @@ void Application::render() const
     SDL_RenderClear(renderer);
 
     imageField->render(renderer);
-    leftDock->render(renderer);
-    rightDock->render(renderer);
     menuBar->render(renderer);
     layers->render(renderer);
     ImGui::Render();

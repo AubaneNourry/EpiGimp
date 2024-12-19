@@ -28,6 +28,7 @@ SRC_FILES 	=	Application.cpp \
 				events/Shortcut.cpp \
 				FileManager.cpp \
 				tabs/ToolTab.cpp \
+				Layers.cpp \
 
 SRC_DIR 	=	src/
 SRC		=	$(addprefix $(SRC_DIR), $(SRC_FILES))

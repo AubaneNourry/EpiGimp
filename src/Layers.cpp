@@ -23,8 +23,8 @@ Layers::Layers() : selected_layer(0)
 SDL_Texture* GenerateThumbnail(SDL_Renderer* renderer, const SDL_Texture* layer_texture, int thumbnail_width, int thumbnail_height) {
     SDL_Texture* thumbnail = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, thumbnail_width, thumbnail_height);
     SDL_SetRenderTarget(renderer, thumbnail);
-    SDL_RenderCopy(renderer, const_cast<SDL_Texture*>(layer_texture), nullptr, nullptr); // Resize and copy
-    SDL_SetRenderTarget(renderer, nullptr); // Restore default render target
+    SDL_RenderCopy(renderer, const_cast<SDL_Texture*>(layer_texture), nullptr, nullptr);
+    SDL_SetRenderTarget(renderer, nullptr);
     return thumbnail;
 }
 
@@ -38,8 +38,9 @@ void Layers::render(SDL_Renderer* renderer)
             std::cerr << "Failed to create texture: " << SDL_GetError() << std::endl;
             return;
         }
+        SDL_SetTextureBlendMode(new_texture, SDL_BLENDMODE_BLEND);
         SDL_SetRenderTarget(renderer, new_texture);
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
         SDL_RenderClear(renderer);
         SDL_SetRenderTarget(renderer, nullptr);
         layers.push_back({"New Layer", true, new_texture});
