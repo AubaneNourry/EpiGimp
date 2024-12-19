@@ -30,7 +30,7 @@ SDL_Texture* GenerateThumbnail(SDL_Renderer* renderer, const SDL_Texture* layer_
 
 void Layers::render(SDL_Renderer* renderer)
 {
-	ImGui::Begin("Layers Manager", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+    ImGui::Begin("Layers Manager", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
 
     if (ImGui::Button("Add Layer")) {
         SDL_Texture* new_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 200, 200);
@@ -97,9 +97,17 @@ void Layers::render(SDL_Renderer* renderer)
 
     ImGui::Separator();
 
-    // Display selected layer details
+    // Display and allow renaming of selected layer
     if (selected_layer >= 0 && selected_layer < layers.size()) {
         ImGui::Text("Selected Layer: %s", layers[selected_layer].name.c_str());
+
+        static char layerNameBuffer[256]; // Temporary buffer for layer name
+        strncpy(layerNameBuffer, layers[selected_layer].name.c_str(), sizeof(layerNameBuffer));
+        layerNameBuffer[sizeof(layerNameBuffer) - 1] = '\0'; // Ensure null-termination
+
+        if (ImGui::InputText("Rename Layer", layerNameBuffer, sizeof(layerNameBuffer))) {
+            layers[selected_layer].name = std::string(layerNameBuffer);
+        }
     }
 
     ImGui::End();
