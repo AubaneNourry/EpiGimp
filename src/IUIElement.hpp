@@ -17,8 +17,6 @@ public:
     virtual ~IUIElement() = default;
     virtual void render(SDL_Renderer* renderer) = 0;
     virtual void handleEvent(const SDL_Event& event) = 0;
-    [[nodiscard]] virtual std::pair<int, int> getPosition() const = 0;
-    [[nodiscard]] virtual std::pair<int, int> getDimensions() const = 0;
 };
 
 #endif // IUIELEMENT_HPP

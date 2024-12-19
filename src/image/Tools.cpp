@@ -8,10 +8,9 @@
 #include "Tools.hpp"
 #include <queue>
 
-Tools &Tools::getInstance()
+Tools::Tools()
 {
-    static Tools instance;
-    return instance;
+    init();
 }
 
 void Tools::draw(const int mouseX, const int mouseY, const SDL_Rect rect, Uint32* pixels) const
@@ -49,14 +48,14 @@ void Tools::init()
     _color = 0x000000FF;
     _currentToolIndex = 0;
     _size = 1;
-    addTool("Pencil", [](int mouseX, int mouseY, SDL_Rect rect, Uint32* pixels) {
+    addTool("Pencil", [this](int mouseX, int mouseY, SDL_Rect rect, Uint32* pixels) {
         if (mouseX >= rect.x && mouseX < rect.x + rect.w &&
         mouseY >= rect.y && mouseY < rect.y + rect.h) {
-        const int color = Tools::getInstance().getColor();
+        const int color = this->getColor();
         const int startX = mouseX - rect.x;
         const int startY = mouseY - rect.y;
-        for (int y = 0; y < Tools::getInstance().getSize(); ++y) {
-            for (int x = 0; x < Tools::getInstance().getSize(); ++x) {
+        for (int y = 0; y < this->getSize(); ++y) {
+            for (int x = 0; x < this->getSize(); ++x) {
                 int pixelX = startX + x;
                 int pixelY = startY + y;
                 if (pixelX >= 0 && pixelX < rect.w && pixelY >= 0 && pixelY < rect.h) {
@@ -65,7 +64,7 @@ void Tools::init()
             }
         }
     }});
-    addTool("Paint Bucket", [](int mouseX, int mouseY, SDL_Rect rect, Uint32* pixels) {
+    addTool("Paint Bucket", [this](int mouseX, int mouseY, SDL_Rect rect, Uint32* pixels) {
         if (mouseX < rect.x || mouseX >= rect.x + rect.w ||
             mouseY < rect.y || mouseY >= rect.y + rect.h) {
             return;
@@ -75,7 +74,7 @@ void Tools::init()
         const int startY = mouseY - rect.y;
 
         const int targetColor = pixels[startY * rect.w + startX];
-        const int fillColor = Tools::getInstance().getColor();
+        const int fillColor = this->getColor();
 
         if (targetColor == fillColor) {
              return;
@@ -99,14 +98,14 @@ void Tools::init()
             toFill.push({x, y - 1});
         }
     });
-    addTool("Eraser", [](int mouseX, int mouseY, SDL_Rect rect, Uint32* pixels) {
+    addTool("Eraser", [this](int mouseX, int mouseY, SDL_Rect rect, Uint32* pixels) {
         if (mouseX >= rect.x && mouseX < rect.x + rect.w &&
         mouseY >= rect.y && mouseY < rect.y + rect.h) {
-        const int color = Tools::getInstance().getColor();
+        const int color = this->getColor();
         const int startX = mouseX - rect.x;
         const int startY = mouseY - rect.y;
-        for (int y = 0; y < Tools::getInstance().getSize(); ++y) {
-            for (int x = 0; x < Tools::getInstance().getSize(); ++x) {
+        for (int y = 0; y < this->getSize(); ++y) {
+            for (int x = 0; x < this->getSize(); ++x) {
                 int pixelX = startX + x;
                 int pixelY = startY + y;
                 if (pixelX >= 0 && pixelX < rect.w && pixelY >= 0 && pixelY < rect.h) {
@@ -115,13 +114,13 @@ void Tools::init()
             }
         }
     }});
-    addTool("Airbrush", [](int mouseX, int mouseY, SDL_Rect rect, Uint32* pixels) {
+    addTool("Airbrush", [this](int mouseX, int mouseY, SDL_Rect rect, Uint32* pixels) {
         if (mouseX < rect.x || mouseX >= rect.x + rect.w ||
         mouseY < rect.y || mouseY >= rect.y + rect.h) {
         return;
         }
-        const int color = Tools::getInstance().getColor();
-        const int size = Tools::getInstance().getSize();
+        const int color = this->getColor();
+        const int size = this->getSize();
         const int radius = size / 2;
         const int centerX = mouseX - rect.x;
         const int centerY = mouseY - rect.y;
@@ -162,6 +161,47 @@ void Tools::init()
                 }
             }
     }});
+}
+
+#include <imgui.h>
+
+uint32_t FloatRGBAToUint32(const float rgba[4]) {
+    uint32_t r = static_cast<uint32_t>(rgba[0] * 255.0f) & 0xFF;
+    uint32_t g = static_cast<uint32_t>(rgba[1] * 255.0f) & 0xFF;
+    uint32_t b = static_cast<uint32_t>(rgba[2] * 255.0f) & 0xFF;
+    uint32_t a = static_cast<uint32_t>(rgba[3] * 255.0f) & 0xFF;
+
+    return (r << 24) | (g << 16) | (b << 8) | a;
+}
+
+void Uint32ToFloatRGBA(uint32_t color, float rgba[4]) {
+    rgba[0] = ((color >> 24) & 0xFF) / 255.0f; // Red
+    rgba[1] = ((color >> 16) & 0xFF) / 255.0f; // Green
+    rgba[2] = ((color >> 8) & 0xFF) / 255.0f;  // Blue
+    rgba[3] = (color & 0xFF) / 255.0f;         // Alpha
+}
+
+void Tools::render(SDL_Renderer* renderer)
+{
+    ImGui::Begin("Tool Settings", nullptr, ImGuiWindowFlags_NoCollapse);
+
+    // Color picker
+    ImGui::ColorEdit4("Color", rgba);
+    _color = FloatRGBAToUint32(rgba);
+
+    // Size slider
+    ImGui::SliderInt("Size", reinterpret_cast<int*>(&_size), 1, 100);
+
+    // Tool navigation buttons
+    if (ImGui::Button("Previous Tool")) {
+        previous();
+    }
+    ImGui::SameLine(); // Place the next button on the same line
+    if (ImGui::Button("Next Tool")) {
+        next();
+    }
+
+    ImGui::End();
 }
 
 #include <iostream>

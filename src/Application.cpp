@@ -6,7 +6,6 @@
 */
 
 #include "Application.hpp"
-#include "tabs/Dock.hpp"
 #include "MenuBar.hpp"
 #include "image/ImageField.hpp"
 #include "events/Shortcuts.hpp"
@@ -81,38 +80,12 @@ Application::Application(const char *appName, const char *defaultImagePath) {
     running = true;
 }
 
-uint32_t FloatRGBAToUint32(const float rgba[4]) {
-    // Convert float values (0.0 - 1.0) to Uint32 components
-    uint32_t r = static_cast<uint32_t>(rgba[0] * 255.0f) & 0xFF;
-    uint32_t g = static_cast<uint32_t>(rgba[1] * 255.0f) & 0xFF;
-    uint32_t b = static_cast<uint32_t>(rgba[2] * 255.0f) & 0xFF;
-    uint32_t a = static_cast<uint32_t>(rgba[3] * 255.0f) & 0xFF;
-
-    // Combine into ARGB format
-    return (r << 24) | (g << 16) | (b << 8) | a;
-}
-
-void Uint32ToFloatRGBA(uint32_t color, float rgba[4]) {
-    // Extract each component from the Uint32 (ARGB format)
-    rgba[0] = ((color >> 24) & 0xFF) / 255.0f; // Red
-    rgba[1] = ((color >> 16) & 0xFF) / 255.0f; // Green
-    rgba[2] = ((color >> 8) & 0xFF) / 255.0f;  // Blue
-    rgba[3] = (color & 0xFF) / 255.0f;         // Alpha
-}
-
 int Application::run() {
-    Uint32 color = 0x000000FF; // Black
-    float rgba[4] = {0.0f, 0.0f, 0.0f, 1.0f};
     while (status == 0 && !EventManager::getInstance().getQuitStatus() && running) {
         EventManager::getInstance().handleEvents();
         ImGui_ImplSDLRenderer2_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
-
-        ImGui::Begin("Color Picker", nullptr, ImGuiWindowFlags_NoCollapse);
-        ImGui::ColorEdit4("Color", rgba);
-        Tools::getInstance().setColor(FloatRGBAToUint32(rgba));
-        ImGui::End();
 
         render();
     }
@@ -129,12 +102,12 @@ int Application::run() {
 void Application::init() {
     menuBar = new MenuBar();
     layers = new Layers();
+    tools = new Tools();
     imageField = new ImageField(200, 200, renderer);
     FileManager::getInstance().setImageField(imageField);
     EventManager::getInstance().registerElement(menuBar);
     EventManager::getInstance().registerElement(imageField);
     Shortcuts::getInstance().registerBaseShortcuts();
-    Tools::getInstance().init();
     SDL_GLContext gl_context = SDL_GL_CreateContext(window);
     SDL_GL_MakeCurrent(window, gl_context);
     SDL_GL_SetSwapInterval(1);
@@ -154,6 +127,7 @@ void Application::render() const
 
     imageField->render(renderer);
     menuBar->render(renderer);
+    tools->render(renderer);
     layers->render(renderer);
     ImGui::Render();
     ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), renderer);

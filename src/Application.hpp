@@ -37,6 +37,9 @@ public:
     [[nodiscard]] SDL_Renderer *getRenderer() const { return renderer; }
     [[nodiscard]] SDL_Window *getWindow() const { return window; }
     [[nodiscard]] IUIElement *getLayers() const { return layers; }
+    [[nodiscard]] IUIElement *getMenuBar() const { return menuBar; }
+    [[nodiscard]] IUIElement *getImageField() const { return imageField; }
+    [[nodiscard]] IUIElement *getTools() const { return tools; }
     void quit();
     void RenderDrawingSurface(SDL_Renderer* renderer);
 private:
@@ -47,10 +50,9 @@ private:
     int status;
     bool running;
     IUIElement* menuBar{};
-    IUIElement* leftDock{};
-    IUIElement* rightDock{};
     IUIElement* imageField{};
     IUIElement* layers{};
+    IUIElement* tools{};
     TTF_Font* font;
     ImGuiIO* io;
     ImFont* imFont;

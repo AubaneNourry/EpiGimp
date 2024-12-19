@@ -24,14 +24,6 @@ public:
     void handleEvent(const SDL_Event& event) override {
         return;
     }
-    [[nodiscard]] std::pair<int, int> getPosition() const override {
-        return {0, 0};
-    }
-    [[nodiscard]] std::pair<int, int> getDimensions() const override {
-        return {0, 0};
-    }
-
-private:
 };
 
 #endif // MENU_BAR_HPP

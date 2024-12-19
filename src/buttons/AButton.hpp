@@ -43,13 +43,6 @@ public:
     [[nodiscard]] SDL_Color getColor() const;
     [[nodiscard]] SDL_Texture* getImage() const;
 
-    [[nodiscard]] std::pair<int, int> getPosition() const override {
-        return {rect->x, rect->y};
-    }
-    [[nodiscard]] std::pair<int, int> getDimensions() const override {
-        return {rect->w, rect->h};
-    }
-
     // Event handlers
     virtual void handleEvent(const SDL_Event& event);
     virtual void render(SDL_Renderer* renderer) = 0;  // Pure virtual, must be implemented by derived classes

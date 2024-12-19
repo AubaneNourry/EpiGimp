@@ -100,8 +100,13 @@ void ImageField::render(SDL_Renderer* renderer) {
         if (ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
             isDrawing = true;
 
-            Tools::getInstance().draw(ImGui::GetMousePos().x, ImGui::GetMousePos().y, rect, pixels);
+            IUIElement* tools = Application::getInstance().getTools();
 
+            Tools *tools_cast = dynamic_cast<Tools*>(tools);
+
+            if (tools_cast) {
+                tools_cast->draw(ImGui::GetMousePos().x, ImGui::GetMousePos().y, rect, pixels);
+            }
             updateTexture();
         }
         if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {

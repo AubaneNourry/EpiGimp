@@ -15,16 +15,21 @@
 #include <SDL2/SDL.h>
 
 #include "Tool.hpp"
+#include "../IUIElement.hpp"
 
-class Tools {
+class Tools : public IUIElement {
 public:
-    static Tools& getInstance();
+    Tools();
+    ~Tools() = default;
     void draw(int mouseX, int mouseY, SDL_Rect rect, Uint32* pixels) const;
 
     void addTool(Tool *tool);
     void removeTool(Tool *tool);
     void addTool(std::string name, std::function<void(int, int, SDL_Rect, Uint32*)> draw);
     void removeTool(std::string name);
+
+    void render(SDL_Renderer* renderer) override;
+    void handleEvent(const SDL_Event& event) override { return; }
 
     void next();
     void previous();
@@ -39,12 +44,11 @@ public:
     void setSize(const unsigned int size) { _size = size; }
 
 private:
-    Tools() = default;
-    ~Tools() = default;
-    Uint32 _color;
+    Uint32 _color = 0x000000FF; // Black
     unsigned int _currentToolIndex = 0;
     unsigned int _size = 1;
     std::vector<Tool *> _tools;
+    float rgba[4] = {0.0f, 0.0f, 0.0f, 1.0f};
 };
 
 #endif // TOOLS_HPP

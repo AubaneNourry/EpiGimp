@@ -33,10 +33,10 @@ public:
     [[nodiscard]] Uint32* getPixels() const;
 
     void clear(Uint32 color = 0xFFFFFFFF) const;
-    [[nodiscard]] std::pair<int, int> getPosition() const override {
+    [[nodiscard]] std::pair<int, int> getPosition() const {
         return {rect.x, rect.y};
     }
-    [[nodiscard]] std::pair<int, int> getDimensions() const override {
+    [[nodiscard]] std::pair<int, int> getDimensions() const {
         return {rect.w, rect.h};
     }
     void setDimensions(int w, int h);
