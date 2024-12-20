@@ -14,6 +14,8 @@
 #include <iostream>
 #include <vector>
 
+#include "Application.hpp"
+
 Layers::Layers() : selected_layer(0)
 {
     layers = {
@@ -33,7 +35,9 @@ void Layers::render(SDL_Renderer* renderer)
     ImGui::Begin("Layers Manager", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
 
     if (ImGui::Button("Add Layer")) {
-        SDL_Texture* new_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 200, 200);
+        IUIElement* imageField = Application::getInstance().getImageField();
+        std::pair<int, int> dimensions = static_cast<ImageField*>(imageField)->getDimensions();
+        SDL_Texture* new_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, dimensions.first, dimensions.second);
         if (!new_texture) {
             std::cerr << "Failed to create texture: " << SDL_GetError() << std::endl;
             return;

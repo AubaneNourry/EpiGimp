@@ -32,7 +32,7 @@ ImageField::ImageField(const int w, const int h, SDL_Renderer* renderer)
     updateTexture();
 }
 
-Uint32* GetPixelsFromTexture(SDL_Renderer* renderer, SDL_Texture* texture, int texture_width, int texture_height) {
+Uint32* ImageField::GetPixelsFromTexture(SDL_Renderer* renderer, SDL_Texture* texture, int texture_width, int texture_height) {
     if (!renderer || !texture) {
         std::cerr << "Renderer or texture is null!" << std::endl;
         return nullptr;
@@ -79,6 +79,7 @@ void ImageField::render(SDL_Renderer* renderer) {
     auto* layers = static_cast<Layers*>(Application::getInstance().getLayers());
     SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, rect.w, rect.h);
     SDL_SetRenderTarget(renderer, texture);
+
     for (auto& layer : layers->getLayers()) {
         if (layer.visible && layer.thumbnail) {
             SDL_RenderCopy(renderer, layer.thumbnail, nullptr, nullptr);
@@ -88,7 +89,7 @@ void ImageField::render(SDL_Renderer* renderer) {
 
     ImGui::SetNextWindowPos({static_cast<float>(rect.x), static_cast<float>(rect.y)});
     ImGui::SetNextWindowSize(ImVec2(rect.w, rect.h), ImGuiCond_FirstUseEver);
-    ImGui::Begin("Drawing Surface", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
+    ImGui::Begin("Drawing Surface", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar);
     ImGui::Image((ImTextureID)texture, {static_cast<float>(rect.w), static_cast<float>(rect.h)});
 
     int selected_layer = layers->getSelectedLayer();
@@ -113,6 +114,9 @@ void ImageField::render(SDL_Renderer* renderer) {
             isDrawing = false;
         }
     }
+    if (rect.w != ImGui::GetWindowSize().x || rect.h != ImGui::GetWindowSize().y) {
+        setDimensions(static_cast<int>(ImGui::GetWindowSize().x), static_cast<int>(ImGui::GetWindowSize().y));
+    }
     ImGui::End();
 }
 
@@ -130,13 +134,53 @@ void ImageField::setTextureFromPath(const char* path) const
 }
 
 void ImageField::setDimensions(int w, int h) {
+    auto* layers = static_cast<Layers*>(Application::getInstance().getLayers());
+    SDL_Renderer* renderer = Application::getInstance().getRenderer();
+
+    // Iterate through all layers and resize their textures
+    for (auto& layer : layers->getLayers()) {
+        // Retrieve old pixel data from the current texture
+        Uint32* oldPixels = GetPixelsFromTexture(renderer, layer.thumbnail, rect.w, rect.h);
+
+        // Create a new pixel buffer
+        Uint32* newPixels = new Uint32[w * h];
+        memset(newPixels, 255, w * h * sizeof(Uint32)); // Fill the new buffer with white
+
+        // Copy old pixel data into the new buffer
+        if (oldPixels) {
+            int copyWidth = std::min(rect.w, w);
+            int copyHeight = std::min(rect.h, h);
+
+            for (int y = 0; y < copyHeight; ++y) {
+                memcpy(&newPixels[y * w], &oldPixels[y * rect.w], copyWidth * sizeof(Uint32));
+            }
+
+            // Free the old pixel buffer
+            delete[] oldPixels;
+        }
+
+        // Destroy the old texture
+        if (layer.thumbnail) {
+            SDL_DestroyTexture(layer.thumbnail);
+        }
+
+        // Create a new texture with the new dimensions
+        layer.thumbnail = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, w, h);
+
+        if (layer.thumbnail) {
+            SDL_SetTextureBlendMode(layer.thumbnail, SDL_BLENDMODE_BLEND);
+
+            // Upload the resized pixel data to the new texture
+            SDL_UpdateTexture(layer.thumbnail, nullptr, newPixels, w * sizeof(Uint32));
+        } else {
+            std::cerr << "Failed to resize texture for layer: " << SDL_GetError() << std::endl;
+        }
+
+        delete[] newPixels;
+    }
+
     rect.w = w;
     rect.h = h;
-
-    delete[] pixels;
-    pixels = new Uint32[w * h];
-
-    memset(pixels, 255, w * h * sizeof(Uint32));
 }
 
 void ImageField::setPosition(int x, int y) {

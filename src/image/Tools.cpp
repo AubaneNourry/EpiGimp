@@ -161,6 +161,9 @@ void Tools::init()
                 }
             }
     }});
+    addTool("Move", [this](int mouseX, int mouseY, SDL_Rect rect, Uint32* pixels) {
+        return;
+    });
 }
 
 #include <imgui.h>

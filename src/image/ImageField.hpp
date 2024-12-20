@@ -42,6 +42,8 @@ public:
     void setDimensions(int w, int h);
     void setPosition(int x, int y);
 
+    Uint32* GetPixelsFromTexture(SDL_Renderer* renderer, SDL_Texture* texture, int texture_width, int texture_height);
+
 private:
     SDL_Rect rect{};
     Uint32* pixels;
