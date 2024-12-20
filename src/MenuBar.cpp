@@ -66,21 +66,4 @@ void MenuBar::render(SDL_Renderer* renderer)
     }
 
     ImGui::End();
-
-    // Edit a color stored as 4 floats
-    /*ImGui::ColorEdit4("Color", my_color);
-
-    // Generate samples and plot them
-    float samples[100];
-    for (int n = 0; n < 100; n++)
-        samples[n] = sinf(n * 0.2f + ImGui::GetTime() * 1.5f);
-    ImGui::PlotLines("Samples", samples, 100);
-
-    // Display contents in a scrolling region
-    ImGui::TextColored(ImVec4(1,1,0,1), "Important Stuff");
-    ImGui::BeginChild("Scrolling");
-    for (int n = 0; n < 50; n++)
-        ImGui::Text("%04d: Some text", n);
-    ImGui::EndChild();*/
-
 }

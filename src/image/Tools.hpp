@@ -42,6 +42,7 @@ public:
     void setCurrentToolIndex(const unsigned int index) { _currentToolIndex = index; }
     [[nodiscard]] unsigned int getSize() const { return _size; }
     void setSize(const unsigned int size) { _size = size; }
+    bool isMoveToolActive() const { return _currentToolIndex == 4; }
 
 private:
     Uint32 _color = 0x000000FF; // Black

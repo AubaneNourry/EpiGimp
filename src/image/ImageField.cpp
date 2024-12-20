@@ -92,26 +92,52 @@ void ImageField::render(SDL_Renderer* renderer) {
     ImGui::Begin("Drawing Surface", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar);
     ImGui::Image((ImTextureID)texture, {static_cast<float>(rect.w), static_cast<float>(rect.h)});
 
-    int selected_layer = layers->getSelectedLayer();
+    IUIElement* tools = Application::getInstance().getTools();
+    Tools* tools_cast = dynamic_cast<Tools*>(tools);
 
-    if (selected_layer >= 0 && selected_layer < layers->getLayers().size()) {
-        Layer& currentLayer = layers->getLayers()[selected_layer];
-        pixels = GetPixelsFromTexture(renderer, currentLayer.thumbnail, rect.w, rect.h);
+    static ImVec2 lastMousePos;
+    static bool isMoving = false;
 
-        if (ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
-            isDrawing = true;
+    if (tools_cast && tools_cast->isMoveToolActive()) {
+        if (ImGui::IsItemHovered()) {
+            ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
+            if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+                ImVec2 currentMousePos = ImGui::GetMousePos();
+                if (!isMoving) {
+                    isMoving = true;
+                    lastMousePos = currentMousePos;
+                }
 
-            IUIElement* tools = Application::getInstance().getTools();
+                ImVec2 delta = ImVec2(currentMousePos.x - lastMousePos.x, currentMousePos.y - lastMousePos.y);
+                rect.x += static_cast<int>(delta.x);
+                rect.y += static_cast<int>(delta.y);
 
-            Tools *tools_cast = dynamic_cast<Tools*>(tools);
-
-            if (tools_cast) {
-                tools_cast->draw(ImGui::GetMousePos().x, ImGui::GetMousePos().y, rect, pixels);
-            }
-            updateTexture();
+                lastMousePos = currentMousePos;
+                }
         }
+
         if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
-            isDrawing = false;
+            isMoving = false;
+        }
+    } else if (tools_cast) {
+        int selected_layer = layers->getSelectedLayer();
+
+        if (selected_layer >= 0 && selected_layer < layers->getLayers().size()) {
+            Layer& currentLayer = layers->getLayers()[selected_layer];
+            pixels = GetPixelsFromTexture(renderer, currentLayer.thumbnail, rect.w, rect.h);
+
+            if (ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
+                isDrawing = true;
+
+                if (!tools_cast->isMoveToolActive()) {
+                    tools_cast->draw(ImGui::GetMousePos().x, ImGui::GetMousePos().y, rect, pixels);
+                }
+                updateTexture();
+            }
+            if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
+                isDrawing = false;
+            }
         }
     }
     if (rect.w != ImGui::GetWindowSize().x || rect.h != ImGui::GetWindowSize().y) {
@@ -119,6 +145,7 @@ void ImageField::render(SDL_Renderer* renderer) {
     }
     ImGui::End();
 }
+
 
 void ImageField::handleEvent(const SDL_Event& event) {
     return;
@@ -137,16 +164,12 @@ void ImageField::setDimensions(int w, int h) {
     auto* layers = static_cast<Layers*>(Application::getInstance().getLayers());
     SDL_Renderer* renderer = Application::getInstance().getRenderer();
 
-    // Iterate through all layers and resize their textures
     for (auto& layer : layers->getLayers()) {
-        // Retrieve old pixel data from the current texture
         Uint32* oldPixels = GetPixelsFromTexture(renderer, layer.thumbnail, rect.w, rect.h);
 
-        // Create a new pixel buffer
         Uint32* newPixels = new Uint32[w * h];
-        memset(newPixels, 255, w * h * sizeof(Uint32)); // Fill the new buffer with white
+        memset(newPixels, 255, w * h * sizeof(Uint32));
 
-        // Copy old pixel data into the new buffer
         if (oldPixels) {
             int copyWidth = std::min(rect.w, w);
             int copyHeight = std::min(rect.h, h);
@@ -155,22 +178,18 @@ void ImageField::setDimensions(int w, int h) {
                 memcpy(&newPixels[y * w], &oldPixels[y * rect.w], copyWidth * sizeof(Uint32));
             }
 
-            // Free the old pixel buffer
             delete[] oldPixels;
         }
 
-        // Destroy the old texture
         if (layer.thumbnail) {
             SDL_DestroyTexture(layer.thumbnail);
         }
 
-        // Create a new texture with the new dimensions
         layer.thumbnail = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, w, h);
 
         if (layer.thumbnail) {
             SDL_SetTextureBlendMode(layer.thumbnail, SDL_BLENDMODE_BLEND);
 
-            // Upload the resized pixel data to the new texture
             SDL_UpdateTexture(layer.thumbnail, nullptr, newPixels, w * sizeof(Uint32));
         } else {
             std::cerr << "Failed to resize texture for layer: " << SDL_GetError() << std::endl;
