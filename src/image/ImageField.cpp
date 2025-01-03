@@ -15,11 +15,14 @@
 #include "../Application.hpp"
 
 ImageField::ImageField(const int w, const int h, SDL_Renderer* renderer)
-    : pixels(nullptr), pitch(0), isDrawing(false)
+    : pixels(nullptr), pitch(0), isDrawing(false), zoomFactor(1.0f), drawingSurface(nullptr)
 {
     int windowWidth, windowHeight;
     SDL_GetRendererOutputSize(renderer, &windowWidth, &windowHeight);
+
     rect = {windowWidth / 2 - w / 2, windowHeight / 2 - h / 2, w, h};
+    viewRect = {0, 0, w, h};
+
     pixels = new Uint32[w * h];
     memset(pixels, 255, w * h * sizeof(Uint32));
     auto* layers = static_cast<Layers*>(Application::getInstance().getLayers());
@@ -77,8 +80,8 @@ ImageField::~ImageField() {
 
 void ImageField::render(SDL_Renderer* renderer) {
     auto* layers = static_cast<Layers*>(Application::getInstance().getLayers());
-    SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, rect.w, rect.h);
-    SDL_SetRenderTarget(renderer, texture);
+    drawingSurface = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, rect.w, rect.h);
+    SDL_SetRenderTarget(renderer, drawingSurface);
 
     for (auto& layer : layers->getLayers()) {
         if (layer.visible && layer.thumbnail) {
@@ -90,7 +93,29 @@ void ImageField::render(SDL_Renderer* renderer) {
     ImGui::SetNextWindowPos({static_cast<float>(rect.x), static_cast<float>(rect.y)});
     ImGui::SetNextWindowSize(ImVec2(rect.w, rect.h), ImGuiCond_FirstUseEver);
     ImGui::Begin("Drawing Surface", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar);
-    ImGui::Image((ImTextureID)texture, {static_cast<float>(rect.w), static_cast<float>(rect.h)});
+
+    if (drawingSurface) {
+        int textureWidth, textureHeight;
+        SDL_QueryTexture(drawingSurface, nullptr, nullptr, &textureWidth, &textureHeight);
+        float textureAspectRatio = static_cast<float>(textureWidth) / textureHeight;
+        float viewAspectRatio = static_cast<float>(viewRect.w) / viewRect.h;
+
+        if (viewAspectRatio > textureAspectRatio) {
+            viewRect.w = static_cast<int>(viewRect.h * textureAspectRatio);
+        } else if (viewAspectRatio < textureAspectRatio) {
+            viewRect.h = static_cast<int>(viewRect.w / textureAspectRatio);
+        }
+
+        ImVec2 uv0 = ImVec2(
+            static_cast<float>(viewRect.x) / textureWidth,
+            static_cast<float>(viewRect.y) / textureHeight
+        );
+        ImVec2 uv1 = ImVec2(
+            static_cast<float>(viewRect.x + viewRect.w) / textureWidth,
+            static_cast<float>(viewRect.y + viewRect.h) / textureHeight
+        );
+        ImGui::Image((ImTextureID)drawingSurface, {static_cast<float>(rect.w), static_cast<float>(rect.h)}, uv0, uv1);
+    }
 
     IUIElement* tools = Application::getInstance().getTools();
     Tools* tools_cast = dynamic_cast<Tools*>(tools);
@@ -140,15 +165,55 @@ void ImageField::render(SDL_Renderer* renderer) {
             }
         }
     }
-    if (rect.w != ImGui::GetWindowSize().x || rect.h != ImGui::GetWindowSize().y) {
-        setDimensions(static_cast<int>(ImGui::GetWindowSize().x), static_cast<int>(ImGui::GetWindowSize().y));
-    }
     ImGui::End();
 }
 
 
 void ImageField::handleEvent(const SDL_Event& event) {
-    return;
+    if (event.type == SDL_MOUSEWHEEL) {
+        int mouseX, mouseY;
+        SDL_GetMouseState(&mouseX, &mouseY);
+        int textureWidth, textureHeight;
+        SDL_QueryTexture(getTexture(), nullptr, nullptr, &textureWidth, &textureHeight);
+
+        // Relative mouse position in the current view
+        float relativeMouseX = (mouseX - rect.x) / static_cast<float>(rect.w);
+        float relativeMouseY = (mouseY - rect.y) / static_cast<float>(rect.h);
+
+        // Zoom speed control (slower zoom)
+        float zoomSpeed = 0.05f;  // Adjust to control zoom speed
+
+        // Zoom logic
+        float zoomStep = (event.wheel.y > 0) ? (1.0f - zoomSpeed) : (1.0f + zoomSpeed);
+        zoomFactor *= zoomStep;  // Apply zoom factor
+
+        // Clamp zoom factor to reasonable values (e.g., between 0.1 and 3.0)
+        if (zoomFactor < 0.1f) zoomFactor = 0.1f;
+        if (zoomFactor > 3.0f) zoomFactor = 3.0f;
+
+        // Compute new width and height based on zoom factor
+        int newWidth = static_cast<int>(viewRect.w * zoomFactor);
+        int newHeight = static_cast<int>(viewRect.h * zoomFactor);
+
+        // Ensure viewRect doesn't get too small
+        int minSize = 1;  // Minimum size for viewRect (you can adjust as needed)
+        newWidth = std::max(newWidth, minSize);
+        newHeight = std::max(newHeight, minSize);
+
+        // Adjust viewRect center to zoom in/out around the mouse position
+        viewRect.x += (viewRect.w - newWidth) * relativeMouseX;
+        viewRect.y += (viewRect.h - newHeight) * relativeMouseY;
+
+        // Update the viewRect dimensions
+        viewRect.w = newWidth;
+        viewRect.h = newHeight;
+
+        // Clamp the viewRect to texture boundaries
+        viewRect.x = std::max(0, viewRect.x);
+        viewRect.y = std::max(0, viewRect.y);
+        viewRect.w = std::min(textureWidth - viewRect.x, viewRect.w);
+        viewRect.h = std::min(textureHeight - viewRect.y, viewRect.h);
+    }
 }
 
 void ImageField::setTextureFromPath(const char* path) const

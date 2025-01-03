@@ -11,7 +11,11 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "../IUIElement.hpp"
+#include "imgui_impl_sdl2.h"
+#include "imgui_impl_sdlrenderer2.h"
+#include "imgui.h"
 
+#include <iostream>
 
 class ImageField final : public IUIElement {
 public:
@@ -49,6 +53,9 @@ private:
     Uint32* pixels;
     int pitch{};
     bool isDrawing;
+    SDL_Rect viewRect;
+    float zoomFactor;
+    SDL_Texture* drawingSurface;
 };
 
 #endif // IMAGEFIELD_HPP
