@@ -25,11 +25,16 @@ public:
     static SDL_Surface* loadSurface(const std::string& path);
     void setImageField(IUIElement* imageField);
     void newImageField() const;
-    void saveImage() const;
+    void saveImage();
+    void openImage();
     [[nodiscard]] ImageField* getImageField() const { return imageField; }
+    static void update();
 
 private:
     ImageField* imageField;
+    bool isSavingImage = false;
+    bool isOpeningImage = false;
+    char fileName[256] = "";
 };
 
 #endif // FILEMANAGER_HPP

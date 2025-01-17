@@ -101,7 +101,6 @@ void Layers::render(SDL_Renderer* renderer)
 
     ImGui::Separator();
 
-    // Display and allow renaming of selected layer
     if (selected_layer >= 0 && selected_layer < layers.size()) {
         ImGui::Text("Selected Layer: %s", layers[selected_layer].name.c_str());
 
@@ -116,3 +115,45 @@ void Layers::render(SDL_Renderer* renderer)
 
     ImGui::End();
 }
+
+void Layers::addLayer(const std::string& name, SDL_Texture* texture)
+{
+    if (!texture) {
+        std::cerr << "Cannot add layer, texture is null!" << std::endl;
+        return;
+    }
+
+    SDL_Renderer* renderer = Application::getInstance().getRenderer();
+    IUIElement* imageField = Application::getInstance().getImageField();
+    std::pair<int, int> dimensions = static_cast<ImageField*>(imageField)->getDimensions();
+
+    // Create a new texture with the required dimensions
+    SDL_Texture* new_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, dimensions.first, dimensions.second);
+    if (!new_texture) {
+        std::cerr << "Failed to create texture: " << SDL_GetError() << std::endl;
+        return;
+    }
+
+    // Enable blending for transparency
+    SDL_SetTextureBlendMode(new_texture, SDL_BLENDMODE_BLEND);
+
+    // Copy input texture onto the new texture
+    SDL_SetRenderTarget(renderer, new_texture);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+    SDL_RenderClear(renderer);
+
+    // Get input texture dimensions
+    int texW, texH;
+    SDL_QueryTexture(texture, nullptr, nullptr, &texW, &texH);
+
+    // Define the destination rectangle (assuming centering)
+    SDL_Rect destRect = { (dimensions.first - texW) / 2, (dimensions.second - texH) / 2, texW, texH };
+    SDL_RenderCopy(renderer, texture, nullptr, &destRect);
+
+    // Reset render target
+    SDL_SetRenderTarget(renderer, nullptr);
+
+    // Add new texture to layers
+    layers.push_back({ name, true, new_texture });
+}
+

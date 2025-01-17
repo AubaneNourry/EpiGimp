@@ -35,7 +35,7 @@ void MenuBar::render(SDL_Renderer* renderer)
         if (ImGui::BeginMenu("File"))
         {
             if (ImGui::MenuItem("new", "Ctrl+N")) {FileManager::getInstance().newImageField();}
-            if (ImGui::MenuItem("open", "Ctrl+O"))   {}
+            if (ImGui::MenuItem("open", "Ctrl+O"))   {FileManager::getInstance().openImage();}
             if (ImGui::MenuItem("save", "Ctrl+S"))  {FileManager::getInstance().saveImage();}
             if (ImGui::MenuItem("close", "Ctrl+W"))  {Application::getInstance().quit();}
             if (ImGui::MenuItem("quit", "Ctrl+Q"))  {Application::getInstance().quit();}
@@ -43,9 +43,7 @@ void MenuBar::render(SDL_Renderer* renderer)
         }
         if (ImGui::BeginMenu("Edit"))
         {
-            if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
-            if (ImGui::MenuItem("Save", "Ctrl+S"))   { /* Do stuff */ }
-            if (ImGui::MenuItem("Close", "Ctrl+W"))  { my_tool_active = false; }
+            if (ImGui::MenuItem("Import image", "Ctrl+O")) {FileManager::getInstance().openImage();}
             ImGui::EndMenu();
         }
         if (ImGui::BeginMenu("View"))

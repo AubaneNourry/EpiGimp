@@ -50,20 +50,24 @@ void Tools::init()
     _size = 1;
     addTool("Pencil", [this](int mouseX, int mouseY, SDL_Rect rect, Uint32* pixels) {
         if (mouseX >= rect.x && mouseX < rect.x + rect.w &&
-        mouseY >= rect.y && mouseY < rect.y + rect.h) {
-        const int color = this->getColor();
-        const int startX = mouseX - rect.x;
-        const int startY = mouseY - rect.y;
-        for (int y = 0; y < this->getSize(); ++y) {
-            for (int x = 0; x < this->getSize(); ++x) {
-                int pixelX = startX + x;
-                int pixelY = startY + y;
-                if (pixelX >= 0 && pixelX < rect.w && pixelY >= 0 && pixelY < rect.h) {
-                    pixels[pixelY * rect.w + pixelX] = color;
+            mouseY >= rect.y && mouseY < rect.y + rect.h) {
+
+            const int color = this->getColor();
+            const int startX = mouseX - rect.x - (this->getSize() - 1) / 2 - 8;
+            const int startY = mouseY - rect.y - (this->getSize() - 1) / 2 - 8;
+
+            for (int y = 0; y < this->getSize(); ++y) {
+                for (int x = 0; x < this->getSize(); ++x) {
+                    int pixelX = startX + x;
+                    int pixelY = startY + y;
+
+                    if (pixelX >= 0 && pixelX < rect.w && pixelY >= 0 && pixelY < rect.h) {
+                        pixels[pixelY * rect.w + pixelX] = color;
+                    }
                 }
             }
         }
-    }});
+    });
     addTool("Paint Bucket", [this](int mouseX, int mouseY, SDL_Rect rect, Uint32* pixels) {
         if (mouseX < rect.x || mouseX >= rect.x + rect.w ||
             mouseY < rect.y || mouseY >= rect.y + rect.h) {
@@ -100,30 +104,36 @@ void Tools::init()
     });
     addTool("Eraser", [this](int mouseX, int mouseY, SDL_Rect rect, Uint32* pixels) {
         if (mouseX >= rect.x && mouseX < rect.x + rect.w &&
-        mouseY >= rect.y && mouseY < rect.y + rect.h) {
-        const int color = this->getColor();
-        const int startX = mouseX - rect.x;
-        const int startY = mouseY - rect.y;
-        for (int y = 0; y < this->getSize(); ++y) {
-            for (int x = 0; x < this->getSize(); ++x) {
-                int pixelX = startX + x;
-                int pixelY = startY + y;
-                if (pixelX >= 0 && pixelX < rect.w && pixelY >= 0 && pixelY < rect.h) {
-                    pixels[pixelY * rect.w + pixelX] = 0xFFFFFFFF;
+            mouseY >= rect.y && mouseY < rect.y + rect.h) {
+
+            const int startX = mouseX - rect.x - (this->getSize() - 1) / 2 - 8;
+            const int startY = mouseY - rect.y - (this->getSize() - 1) / 2 - 8;
+
+            for (int y = 0; y < this->getSize(); ++y) {
+                for (int x = 0; x < this->getSize(); ++x) {
+                    int pixelX = startX + x;
+                    int pixelY = startY + y;
+
+                    if (pixelX >= 0 && pixelX < rect.w && pixelY >= 0 && pixelY < rect.h) {
+                        pixels[pixelY * rect.w + pixelX] = 0xFFFFFFFF;
+                    }
                 }
             }
         }
-    }});
+    });
+
     addTool("Airbrush", [this](int mouseX, int mouseY, SDL_Rect rect, Uint32* pixels) {
         if (mouseX < rect.x || mouseX >= rect.x + rect.w ||
-        mouseY < rect.y || mouseY >= rect.y + rect.h) {
-        return;
+            mouseY < rect.y || mouseY >= rect.y + rect.h) {
+            return;
         }
+
         const int color = this->getColor();
         const int size = this->getSize();
         const int radius = size / 2;
-        const int centerX = mouseX - rect.x;
-        const int centerY = mouseY - rect.y;
+
+        const int centerX = mouseX - rect.x - (this->getSize() - 1) / 2 - 8;
+        const int centerY = mouseY - rect.y - (this->getSize() - 1) / 2 - 8;
 
         const Uint8 r = (color >> 24) & 0xFF;
         const Uint8 g = (color >> 16) & 0xFF;
@@ -140,7 +150,6 @@ void Tools::init()
 
                     if (distance <= radius) {
                         float fadeFactor = std::max(0.0f, 1.0f - (distance / radius));
-
                         fadeFactor *= static_cast<float>(std::rand()) / RAND_MAX;
 
                         int index = pixelY * rect.w + pixelX;
@@ -160,9 +169,115 @@ void Tools::init()
                     }
                 }
             }
-    }});
+        }
+    });
+
     addTool("Move", [this](int mouseX, int mouseY, SDL_Rect rect, Uint32* pixels) {
         return;
+    });
+
+    addTool("Brush", [this](int mouseX, int mouseY, SDL_Rect rect, Uint32* pixels) {
+        if (mouseX < rect.x || mouseX >= rect.x + rect.w ||
+            mouseY < rect.y || mouseY >= rect.y + rect.h) {
+            return;
+        }
+
+        const int color = this->getColor();
+        const int size = this->getSize();
+        const int radius = size / 2;
+
+        const int centerX = mouseX - rect.x - radius;
+        const int centerY = mouseY - rect.y - radius;
+
+        const Uint8 r = (color >> 24) & 0xFF;
+        const Uint8 g = (color >> 16) & 0xFF;
+        const Uint8 b = (color >> 8) & 0xFF;
+        const Uint8 a = color & 0xFF;
+
+        for (int y = -radius; y <= radius; ++y) {
+            for (int x = -radius; x <= radius; ++x) {
+                int pixelX = centerX + x;
+                int pixelY = centerY + y;
+
+                if (pixelX >= 0 && pixelX < rect.w && pixelY >= 0 && pixelY < rect.h) {
+                    float distance = std::sqrt(x * x + y * y);
+
+                    if (distance <= radius) {
+                        float fadeFactor = std::max(0.0f, 1.0f - (distance / radius));
+
+                        int index = pixelY * rect.w + pixelX;
+                        Uint32 existingColor = pixels[index];
+
+                        Uint8 existingR = (existingColor >> 24) & 0xFF;
+                        Uint8 existingG = (existingColor >> 16) & 0xFF;
+                        Uint8 existingB = (existingColor >> 8) & 0xFF;
+                        Uint8 existingA = existingColor & 0xFF;
+
+                        Uint8 newR = static_cast<Uint8>(existingR * (1.0f - fadeFactor) + r * fadeFactor);
+                        Uint8 newG = static_cast<Uint8>(existingG * (1.0f - fadeFactor) + g * fadeFactor);
+                        Uint8 newB = static_cast<Uint8>(existingB * (1.0f - fadeFactor) + b * fadeFactor);
+                        Uint8 newA = static_cast<Uint8>(existingA * (1.0f - fadeFactor) + a * fadeFactor);
+
+                        pixels[index] = (newR << 24) | (newG << 16) | (newB << 8) | newA;
+                    }
+                }
+            }
+        }
+    });
+
+    addTool("Line", [this](int mouseX, int mouseY, SDL_Rect rect, Uint32* pixels) {
+        if (mouseX < rect.x || mouseX >= rect.x + rect.w ||
+            mouseY < rect.y || mouseY >= rect.y + rect.h) {
+            return;
+        }
+
+        static int startX = -1, startY = -1;
+        if (startX == -1 && startY == -1) {
+            startX = mouseX - rect.x;
+            startY = mouseY - rect.y;
+        }
+
+        const int color = this->getColor();
+        const int lineSize = this->getSize(); // This is the thickness of the line.
+        const Uint8 r = (color >> 24) & 0xFF;
+        const Uint8 g = (color >> 16) & 0xFF;
+        const Uint8 b = (color >> 8) & 0xFF;
+        const Uint8 a = color & 0xFF;
+
+        int endX = mouseX - rect.x;
+        int endY = mouseY - rect.y;
+
+        // Simple Bresenham's Line algorithm
+        int dx = abs(endX - startX);
+        int dy = abs(endY - startY);
+        int sx = (startX < endX) ? 1 : -1;
+        int sy = (startY < endY) ? 1 : -1;
+        int err = dx - dy;
+
+        while (true) {
+            // Drawing the line with thickness
+            for (int yOffset = -lineSize / 2; yOffset <= lineSize / 2; ++yOffset) {
+                for (int xOffset = -lineSize / 2; xOffset <= lineSize / 2; ++xOffset) {
+                    int pixelX = startX + xOffset;
+                    int pixelY = startY + yOffset;
+
+                    if (pixelX >= 0 && pixelX < rect.w && pixelY >= 0 && pixelY < rect.h) {
+                        pixels[pixelY * rect.w + pixelX] = (r << 24) | (g << 16) | (b << 8) | a;
+                    }
+                }
+            }
+
+            if (startX == endX && startY == endY) break;
+            int e2 = err * 2;
+            if (e2 > -dy) {
+                err -= dy;
+                startX += sx;
+            }
+            if (e2 < dx) {
+                err += dx;
+                startY += sy;
+            }
+        }
     });
 }
 

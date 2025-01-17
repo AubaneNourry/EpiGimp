@@ -86,7 +86,7 @@ int Application::run() {
         ImGui_ImplSDLRenderer2_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
-
+        FileManager::getInstance().update();
         render();
     }
     ImGui_ImplSDLRenderer2_Shutdown();

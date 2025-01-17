@@ -92,7 +92,7 @@ void ImageField::render(SDL_Renderer* renderer) {
 
     ImGui::SetNextWindowPos({static_cast<float>(rect.x), static_cast<float>(rect.y)});
     ImGui::SetNextWindowSize(ImVec2(rect.w, rect.h), ImGuiCond_FirstUseEver);
-    ImGui::Begin("Drawing Surface", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar);
+    ImGui::Begin("Drawing Surface", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
     if (drawingSurface) {
         int textureWidth, textureHeight;
@@ -218,12 +218,41 @@ void ImageField::handleEvent(const SDL_Event& event) {
 
 void ImageField::setTextureFromPath(const char* path) const
 {
-    if (SDL_Surface* surface = FileManager::loadSurface(path)) {
-        memcpy(pixels, surface->pixels, rect.w * rect.h * sizeof(Uint32));
-        updateTexture();
-        SDL_FreeSurface(surface);
+    SDL_Renderer* renderer = Application::getInstance().getRenderer();
+    if (!renderer) {
+        std::cerr << "Renderer not available!" << std::endl;
+        return;
     }
+
+    SDL_Surface* surface = FileManager::loadSurface(path);
+    if (!surface) {
+        std::cerr << "Failed to load surface from path: " << path << std::endl;
+        return;
+    }
+
+    // Convert the surface to a texture
+    SDL_Texture* newTexture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_FreeSurface(surface);
+
+    if (!newTexture) {
+        std::cerr << "Failed to create texture from surface: " << SDL_GetError() << std::endl;
+        return;
+    }
+
+    int textureWidth, textureHeight;
+    SDL_QueryTexture(newTexture, nullptr, nullptr, &textureWidth, &textureHeight);
+
+    auto* layers = static_cast<Layers*>(Application::getInstance().getLayers());
+    if (!layers) {
+        SDL_DestroyTexture(newTexture);
+        return;
+    }
+
+    layers->addLayer("Imported Image", newTexture);
+
+    const_cast<ImageField*>(this)->setDimensions(textureWidth, textureHeight);
 }
+
 
 void ImageField::setDimensions(int w, int h) {
     auto* layers = static_cast<Layers*>(Application::getInstance().getLayers());
@@ -285,14 +314,7 @@ void ImageField::updateTexture() const {
 
 SDL_Texture* ImageField::getTexture() const
 {
-  	auto* layers = static_cast<Layers*>(Application::getInstance().getLayers());
-    int selected_layer = layers->getSelectedLayer();
-
-    if (selected_layer >= 0 && selected_layer < layers->getLayers().size()) {
-        Layer& currentLayer = layers->getLayers()[selected_layer];
-        return currentLayer.thumbnail;
-    }
-    return nullptr;
+  	return drawingSurface;
 }
 
 void ImageField::setTexture(SDL_Texture* texture) {
